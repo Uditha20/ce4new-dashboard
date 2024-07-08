@@ -35,7 +35,7 @@ const Product = ({
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 
-  const baseUrl = "http://localhost:5000"; // Replace with your actual base URL if different
+  const baseUrl = process.env.REACT_APP_BASE_URL; // Replace with your actual base URL if different
 
   return (
     <Card
