@@ -28,6 +28,7 @@ import {
   TrendingUpOutlined,
   PieChartOutlined,
 } from "@mui/icons-material";
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import FlexBetween from "./FlexBetween";
@@ -45,6 +46,10 @@ const navItems = [
   {
     text: "Products",
     icon: <ShoppingCartOutlined />,
+  },
+  {
+    text: "Delivery",
+    icon: <LocalShippingIcon />,
   },
   {
     text: "Customers",

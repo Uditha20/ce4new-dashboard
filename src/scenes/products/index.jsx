@@ -26,7 +26,7 @@ const Product = ({
   supply,
   stat,
   mainImage,
-  additionalImages,
+  additionalImages = []
 }) => {
   const theme = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -35,8 +35,7 @@ const Product = ({
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 
-  const baseUrl = process.env.REACT_APP_BASE_URL; // Replace with your actual base URL if different
-
+  const baseUrl =process.env.REACT_APP_BASE_URL; // Replace with your actual base URL if different
   return (
     <Card
       sx={{
@@ -118,20 +117,24 @@ const Product = ({
             />
           )}
           <Box display="flex" flexDirection="row" flexWrap="wrap" gap={2}>
-            {additionalImages.map((image, index) => (
-              <img
-                key={index}
-                src={`${baseUrl}/${image}`}
-                alt={`Additional ${index + 1}`}
-                style={{ width: "calc(33.333% - 1rem)", cursor: "pointer" }}
-                onClick={() => {
-                  const img = new Image();
-                  img.src = `${baseUrl}/${image}`;
-                  const w = window.open("");
-                  w.document.write(img.outerHTML);
-                }}
-              />
-            ))}
+            {additionalImages.length > 0 ? (
+              additionalImages.map((image, index) => (
+                <img
+                  key={index}
+                  src={`${baseUrl}/${image}`}
+                  alt={`Additional ${index + 1}`}
+                  style={{ width: "calc(33.333% - 1rem)", cursor: "pointer" }}
+                  onClick={() => {
+                    const img = new Image();
+                    img.src = `${baseUrl}/${image}`;
+                    const w = window.open("");
+                    w.document.write(img.outerHTML);
+                  }}
+                />
+              ))
+            ) : (
+              <Typography>No additional images available</Typography>
+            )}
           </Box>
         </Box>
       </Modal>
@@ -140,7 +143,7 @@ const Product = ({
 };
 
 const Products = () => {
-  const { data, isLoading } = useGetProductsQuery();
+  const { data = [], isLoading } = useGetProductsQuery(); // default to empty array
   const isNonMobile = useMediaQuery("(min-width: 1000px)");
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
 
@@ -154,7 +157,7 @@ const Products = () => {
         Add Product
       </Button>
       <AddProductForm open={isAddProductOpen} handleClose={handleCloseAddProduct} />
-      {data || !isLoading ? (
+      {data.length > 0 && !isLoading ? (
         <Box
           mt="20px"
           display="grid"
@@ -175,7 +178,7 @@ const Products = () => {
               rating,
               category,
               supply,
-              stat,
+             
               mainImage,
               additionalImages,
             }) => (
@@ -188,7 +191,7 @@ const Products = () => {
                 rating={rating}
                 category={category}
                 supply={supply}
-                stat={stat}
+               
                 mainImage={mainImage}
                 additionalImages={additionalImages}
               />
