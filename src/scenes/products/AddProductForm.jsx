@@ -1,24 +1,40 @@
 import React, { useState } from "react";
-import { Box, Button, TextField, Typography, Modal, Grid } from "@mui/material";
-import { useAddProductMutation } from "state/api";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Modal,
+  Grid,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+} from "@mui/material";
+import { useAddProductMutation, useGetDeliveryCostQuery } from "state/api";
 
 const AddProductForm = ({ open, handleClose }) => {
-  const [sku, setSku] = useState('');
-  const [name, setName] = useState('');
-  const [price, setPrice] = useState('');
-  const [discount, setDiscount] = useState('');
-  const [offerEnd, setOfferEnd] = useState('');
+  const [sku, setSku] = useState("");
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [discount, setDiscount] = useState("");
+  const [offerEnd, setOfferEnd] = useState("");
   const [isNew, setIsNew] = useState(false);
-  const [rating, setRating] = useState('');
-  const [saleCount, setSaleCount] = useState('');
-  const [category, setCategory] = useState('');
-  const [tag, setTag] = useState('');
-  const [stock, setStock] = useState('');
-  const [shortDescription, setShortDescription] = useState('');
-  const [fullDescription, setFullDescription] = useState('');
+  const [rating, setRating] = useState("");
+  const [saleCount, setSaleCount] = useState("");
+  const [category, setCategory] = useState("");
+  const [tag, setTag] = useState("");
+  const [stock, setStock] = useState("");
+  const [shortDescription, setShortDescription] = useState("");
+  const [fullDescription, setFullDescription] = useState("");
   const [mainImage, setMainImage] = useState(null);
   const [additionalImages, setAdditionalImages] = useState([]);
-  const [addProduct, { isLoading, isSuccess, isError, error }] = useAddProductMutation();
+  const [deliveryCost, setDeliveryCost] = useState("");
+
+  const { data: deliveryCosts = [], isLoading: isDeliveryCostLoading } =
+    useGetDeliveryCostQuery();
+  const [addProduct, { isLoading, isSuccess, isError, error }] =
+    useAddProductMutation();
 
   const handleMainImageChange = (e) => {
     setMainImage(e.target.files[0]);
@@ -32,41 +48,42 @@ const AddProductForm = ({ open, handleClose }) => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append('sku', sku);
-    formData.append('name', name);
-    formData.append('price', price);
-    formData.append('discount', discount);
-    formData.append('offerEnd', offerEnd);
-    formData.append('new', isNew);
-    formData.append('rating', rating);
-    formData.append('saleCount', saleCount);
-    formData.append('category', category);
-    formData.append('tag', tag);
-    formData.append('stock', stock);
-    formData.append('shortDescription', shortDescription);
-    formData.append('fullDescription', fullDescription);
+    formData.append("sku", sku);
+    formData.append("name", name);
+    formData.append("price", price);
+    formData.append("discount", discount);
+    formData.append("offerEnd", offerEnd);
+    formData.append("new", isNew);
+    formData.append("rating", rating);
+    formData.append("saleCount", saleCount);
+    formData.append("category", category);
+    formData.append("tag", tag);
+    formData.append("stock", stock);
+    formData.append("shortDescription", shortDescription);
+    formData.append("fullDescription", fullDescription);
+    formData.append("deliveryCost", deliveryCost);
     if (mainImage) {
-      formData.append('mainImage', mainImage);
+      formData.append("mainImage", mainImage);
     }
     for (let i = 0; i < additionalImages.length; i++) {
-      formData.append('additionalImages', additionalImages[i]);
+      formData.append("additionalImages", additionalImages[i]);
     }
-
+console.log(formData)
     await addProduct(formData);
     handleClose();
   };
 
   return (
     <Modal open={open} onClose={handleClose}>
-      <Box 
+      <Box
         sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
           width: 600,
-          bgcolor: 'background.paper',
-          border: '2px solid #000',
+          bgcolor: "background.paper",
+          border: "2px solid #000",
           boxShadow: 24,
           p: 4,
         }}
@@ -170,6 +187,37 @@ const AddProductForm = ({ open, handleClose }) => {
                 value={shortDescription}
                 onChange={(e) => setShortDescription(e.target.value)}
               />
+              <FormControl fullWidth margin="normal">
+                <InputLabel id="delivery-cost-label">Delivery Cost</InputLabel>
+                <Select
+                  labelId="delivery-cost-label"
+                  value={deliveryCost}
+                  onChange={(e) => setDeliveryCost(e.target.value)}
+                  label="Delivery Cost"
+                >
+                  {deliveryCosts.map((cost) => (
+                    <MenuItem key={cost._id} value={cost.cost}>
+                      ${cost.cost.toFixed(2)}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {/* <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Age</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={deliveryCost}
+                  label="Delivery Cost"
+                  onChange={(e) => setDeliveryCost(e.target.value)}
+                >
+                  {deliveryCosts.map((cost) => (
+                    <MenuItem key={cost._id} value={cost._id}>
+                      {cost.cost.toFixed(2)}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl> */}
             </Grid>
             <Grid item xs={12}>
               <TextField

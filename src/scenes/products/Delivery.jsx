@@ -1,30 +1,18 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import { useAddDeliveryCostMutation, useGetDeliveryCostQuery } from '../../state/api'; // Adjust the import based on your project structure
 import Header from 'components/Header'; // Adjust the import based on your project structure
-
-const initialDeliveries = [
-    { id: 1, cost: 10.0 },
-    { id: 2, cost: 15.0 },
-    { id: 3, cost: 20.0 },
-    { id: 4, cost: 20.0 },
-    { id: 5, cost: 20.0 },
-    { id: 6, cost: 20.0 },
-    { id: 7, cost: 20.0 },
-    { id: 8, cost: 20.0 },
-    { id: 9, cost: 20.0 },
-    { id: 10, cost: 10.0 },
-    { id: 11, cost: 10.0 },
-    { id: 12, cost: 10.0 },
-    { id: 13, cost: 12.0 },
-    { id: 14, cost: 18.0 }
-];
 
 const Delivery = () => {
   const theme = useTheme();
-  const [deliveries, setDeliveries] = useState(initialDeliveries);
   const [open, setOpen] = useState(false);
-  const [newDelivery, setNewDelivery] = useState({ id: '', cost: '' });
+  const [newDelivery, setNewDelivery] = useState({ cost: '' });
+  const [addDeliveryCost] = useAddDeliveryCostMutation();
+  const { data = [], isLoading } = useGetDeliveryCostQuery();
+
+  // Assign sequential ids to data
+  const rows = data.map((item, index) => ({ ...item, id: index + 1 }));
 
   const columns = [
     {
@@ -46,7 +34,7 @@ const Delivery = () => {
 
   const handleClose = () => {
     setOpen(false);
-    setNewDelivery({ id: '', cost: '' });
+    setNewDelivery({ cost: '' });
   };
 
   const handleChange = (e) => {
@@ -57,12 +45,14 @@ const Delivery = () => {
     }));
   };
 
-  const handleAddDelivery = () => {
-    setDeliveries((prev) => [
-      ...prev,
-      { id: parseInt(newDelivery.id, 10), cost: parseFloat(newDelivery.cost) },
-    ]);
-    handleClose();
+  const handleAddDelivery = async () => {
+    try {
+     // Generate a new sequential ID
+      await addDeliveryCost({  cost: parseFloat(newDelivery.cost) }).unwrap();
+      handleClose();
+    } catch (error) {
+      console.error('Failed to add delivery cost: ', error);
+    }
   };
 
   return (
@@ -100,26 +90,15 @@ const Delivery = () => {
       >
         <DataGrid
           getRowId={(row) => row.id}
-          rows={deliveries}
+          rows={rows}
           columns={columns}
-        //   pageSize={5}
-        //   rowsPerPageOptions={[5, 10, 20]}
+          loading={isLoading}
         />
       </Box>
 
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Add New Delivery</DialogTitle>
         <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            name="id"
-            label="No"
-            type="number"
-            fullWidth
-            value={newDelivery.id}
-            onChange={handleChange}
-          />
           <TextField
             margin="dense"
             name="cost"

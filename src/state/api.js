@@ -13,6 +13,7 @@ export const api = createApi({
     "Admins",
     "Performance",
     "Dashboard",
+   " Delivery"
   ],
   endpoints: (build) => ({
     getUser: build.query({
@@ -63,6 +64,18 @@ export const api = createApi({
       }),
       invalidatesTags: ['Products'],
     }),
+    addDeliveryCost: build.mutation({
+      query: (newCost) => ({
+        url: 'sales/addCost',
+        method: 'POST',
+        body: newCost,
+      }),
+      invalidatesTags: ['Delivery'],
+    }),
+    getDeliveryCost: build.query({
+      query: () => "sales/getCost",
+      providesTags: ["Delivery"],
+    }),
   }),
 });
 
@@ -77,4 +90,6 @@ export const {
   useGetUserPerformanceQuery,
   useGetDashboardQuery,
   useAddProductMutation,
+  useAddDeliveryCostMutation,
+  useGetDeliveryCostQuery
 } = api;
