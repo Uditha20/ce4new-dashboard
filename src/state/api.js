@@ -13,7 +13,8 @@ export const api = createApi({
     "Admins",
     "Performance",
     "Dashboard",
-   " Delivery"
+   " Delivery",
+   "OrderHistory"
   ],
   endpoints: (build) => ({
     getUser: build.query({
@@ -76,6 +77,10 @@ export const api = createApi({
       query: () => "sales/getCost",
       providesTags: ["Delivery"],
     }),
+    getOrderHistory: build.query({
+      query: () => "order/orderHistory",
+      providesTags: ["OrderHistory"],
+    }),
   }),
 });
 
@@ -91,5 +96,6 @@ export const {
   useGetDashboardQuery,
   useAddProductMutation,
   useAddDeliveryCostMutation,
-  useGetDeliveryCostQuery
+  useGetDeliveryCostQuery,
+  useGetOrderHistoryQuery
 } = api;

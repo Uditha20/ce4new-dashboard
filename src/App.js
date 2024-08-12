@@ -17,6 +17,8 @@ import Breakdown from "scenes/breakdown";
 import Admin from "scenes/admin";
 import Performance from "scenes/performance";
 import Delivery from "scenes/products/Delivery";
+import ProductStock from "scenes/indentory/ProductStock";
+import OrderHistory from "scenes/indentory/OrderHistory";
 
 function App() {
   const mode = useSelector((state) => state.global.mode);
@@ -41,6 +43,8 @@ function App() {
               <Route path="/admin" element={<Admin />} />
               <Route path="/performance" element={<Performance />} />
               <Route path="/delivery" element ={<Delivery/>}/>
+              <Route path="/inventory" element ={<ProductStock/>}/>
+              <Route path="/orderHistory" element ={<OrderHistory/>}/>                
             </Route>
           </Routes>
         </ThemeProvider>
