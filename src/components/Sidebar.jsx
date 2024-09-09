@@ -27,9 +27,13 @@ import {
   AdminPanelSettingsOutlined,
   TrendingUpOutlined,
   PieChartOutlined,
+ 
 } from "@mui/icons-material";
+import PersonIcon from '@mui/icons-material/Person';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import InventoryIcon from '@mui/icons-material/Inventory';
 import { useEffect, useState } from "react";
+import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 import { useLocation, useNavigate } from "react-router-dom";
 import FlexBetween from "./FlexBetween";
 import profileImage from "assets/profile.jpeg";
@@ -53,15 +57,15 @@ const navItems = [
   },
   {
     text: "Customers",
-    icon: <Groups2Outlined />,
+    icon: <PersonIcon />,
   },
   {
     text: "inventory",
-    icon: <Groups2Outlined />,
+    icon: <InventoryIcon />,
   },
   {
     text: "orderHistory",
-    icon: <Groups2Outlined />,
+    icon: <WorkHistoryIcon />,
   },
   {
     text: "Transactions",

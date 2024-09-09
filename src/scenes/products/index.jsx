@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Card,
@@ -15,6 +15,7 @@ import {
 import Header from "components/Header";
 import { useGetProductsQuery } from "state/api";
 import AddProductForm from './AddProductForm';
+import { useNavigate } from "react-router-dom";
 
 const Product = ({
   _id,
@@ -143,13 +144,19 @@ const Product = ({
 };
 
 const Products = () => {
-  const { data = [], isLoading } = useGetProductsQuery(); // default to empty array
+  const { data = [], isLoading,error } = useGetProductsQuery();
   const isNonMobile = useMediaQuery("(min-width: 1000px)");
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (error && error.status === 401) {
+      window.location.href = `${process.env.REACT_APP_FRONTEND_URL}/`;  // Redirect to index page
+    }
+  }, [error]);
+  
 
   const handleOpenAddProduct = () => setIsAddProductOpen(true);
   const handleCloseAddProduct = () => setIsAddProductOpen(false);
-
   return (
     <Box m="1.5rem 2.5rem">
       <Header title="PRODUCTS" subtitle="See your list of products." />
