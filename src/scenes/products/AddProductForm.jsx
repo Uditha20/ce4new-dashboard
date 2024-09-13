@@ -414,7 +414,7 @@ const AddProductForm = ({ open, handleClose }) => {
               <TextField
                 fullWidth
                 margin="normal"
-       
+                placeholder="stock"
                 type="number"
                 value={stock}
           
