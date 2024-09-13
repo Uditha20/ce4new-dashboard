@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import FlexBetween from "components/FlexBetween";
 import Header from "components/Header";
 import {
@@ -18,13 +18,23 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import BreakdownChart from "components/BreakdownChart";
 import OverviewChart from "components/OverviewChart";
-import { useGetDashboardQuery } from "state/api";
+import { useGetDashboardQuery, useGetUserProfileQuery } from "state/api";
 import StatBox from "components/StatBox";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+  const { data: userProfileData, error, isLoading: isUserProfileLoading } = useGetUserProfileQuery();
+  const navigate = useNavigate();
   const theme = useTheme();
   const isNonMediumScreens = useMediaQuery("(min-width: 1200px)");
   const { data, isLoading } = useGetDashboardQuery();
+  // useEffect(() => {
+  //   if (error) {
+  //     window.location.href = process.env.REACT_APP_FRONTEND_URL;
+  //   }
+  // }, [error, navigate]);
+
+
 
   const columns = [
     {

@@ -56,6 +56,10 @@ const navItems = [
     icon: <LocalShippingIcon />,
   },
   {
+    text: "Category",
+    icon: <LocalShippingIcon />,
+  },
+  {
     text: "Customers",
     icon: <PersonIcon />,
   },

@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_BASE_URL }),
   reducerPath: "adminApi",
+  credentials: 'include',
   tagTypes: [
     "User",
     "Products",
@@ -14,7 +15,8 @@ export const api = createApi({
     "Performance",
     "Dashboard",
    " Delivery",
-   "OrderHistory"
+   "OrderHistory",
+   "catrgory"
   ],
   endpoints: (build) => ({
     getUser: build.query({
@@ -59,6 +61,10 @@ export const api = createApi({
       query: () => "general/dashboard",
       providesTags: ["Dashboard"],
     }),
+      getUserProfile: build.query({
+        query: () => "user/getUserProfile", // Change the URL if needed
+        providesTags: ["User"],
+      }),
     addProduct: build.mutation({
       query: (newProduct) => ({
         url: 'client/products',
@@ -83,6 +89,19 @@ export const api = createApi({
       query: () => "order/orderHistory",
       providesTags: ["OrderHistory"],
     }),
+    addCategory: build.mutation({
+      query: (category) => ({
+        url: 'sales/category',
+        method: 'POST',
+        body: category,
+      }),
+      invalidatesTags: ['catrgory'],
+    }),
+    getCategory: build.query({
+      query: () => "sales/getCategories",
+      providesTags: ["catrgory"],
+    }),
+    
   }),
 });
 
@@ -99,5 +118,8 @@ export const {
   useAddProductMutation,
   useAddDeliveryCostMutation,
   useGetDeliveryCostQuery,
-  useGetOrderHistoryQuery
+  useGetOrderHistoryQuery,
+  useGetUserProfileQuery,
+  useAddCategoryMutation,
+  useGetCategoryQuery,
 } = api;
