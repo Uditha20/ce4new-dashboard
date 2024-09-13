@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  Alert,
   Box,
   Button,
   TextField,
@@ -122,7 +123,7 @@ const AddProductForm = ({ open, handleClose }) => {
       formData.append("additionalImages", additionalImages[i]);
     }
 
-    await addProduct(formData);
+    await addProduct(formData).unwrap();;
     handleClose();
   };
 
@@ -143,6 +144,9 @@ const AddProductForm = ({ open, handleClose }) => {
           maxHeight: "90%",
         }}
       >
+        {isError && <Alert severity="error">{error.message}</Alert>}
+        {isSuccess && <Alert severity="success">Product added successfully</Alert>}
+        
         <Typography variant="h6" component="h2">
           Add New Product
         </Typography>
@@ -410,9 +414,10 @@ const AddProductForm = ({ open, handleClose }) => {
               <TextField
                 fullWidth
                 margin="normal"
-                type="text"
-                label="Stock"
+       
+                type="number"
                 value={stock}
+          
                 onChange={(e) => setStock(e.target.value)}
               />
               <FormControl fullWidth margin="normal">
