@@ -12,16 +12,11 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
-import {
-  useAddProductMutation,
-  useGetCategoryQuery,
-  useGetDeliveryCostQuery,
-} from "state/api";
+import { useAddProductMutation, useGetCategoryQuery } from "state/api";
 
 const AddProductForm = ({ open, handleClose }) => {
   const [sku, setSku] = useState("");
   const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
   const [discount, setDiscount] = useState("");
   const [offerEnd, setOfferEnd] = useState("");
   const [isNew, setIsNew] = useState(false);
@@ -34,21 +29,16 @@ const AddProductForm = ({ open, handleClose }) => {
   const [fullDescription, setFullDescription] = useState("");
   const [mainImage, setMainImage] = useState(null);
   const [additionalImages, setAdditionalImages] = useState([]);
-  const [deliveryCost, setDeliveryCost] = useState("");
 
-  // New Fields
-  const [brand, setBrand] = useState("");
-  const [condition, setCondition] = useState("");
   const [material, setMaterial] = useState("");
-  const [size, setSize] = useState("");
   const [weight, setWeight] = useState("");
   const [capacity, setCapacity] = useState("");
+  const [capacityMeasure, setCapcityMeasure] = useState("");
   const [colour, setColour] = useState("");
   const [itemType, setItemType] = useState("");
-  const [features, setFeatures] = useState("");
+  const [features, setFeatures] = useState([]);
   const [department, setDepartment] = useState("");
   const [shape, setShape] = useState("");
-  const [countryOfManufacture, setCountryOfManufacture] = useState("");
   const [indoorOutdoor, setIndoorOutdoor] = useState("");
   const [originalReproduction, setOriginalReproduction] = useState("");
   const [handmade, setHandmade] = useState("");
@@ -58,8 +48,36 @@ const AddProductForm = ({ open, handleClose }) => {
   const [occasion, setOccasion] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
 
-  const { data: deliveryCosts = [], isLoading: isDeliveryCostLoading } =
-    useGetDeliveryCostQuery();
+  const [price, setPrice] = useState({
+    basePrice: "",
+    oneDayPremium: "",
+    twoDayPremium: "",
+  });
+
+  const [xlPrice, setXlPrice] = useState({
+    xlBasePrice: "",
+    xlOneDayPremium: "",
+    xlTwoDayPremium: "",
+  });
+
+  const [mdPrice, setMdPrice] = useState({
+    mdBasePrice: "",
+    mdOneDayPremium: "",
+    mdTwoDayPremium: "",
+  });
+  const [itemRelatedParts, setItemRelatedParts] = useState({
+    partName: "",
+    width: "",
+    height: "",
+    length: "",
+  });
+
+  const [dimensions,setDimensions]=useState({
+    dwidth: "",
+    dheight: "",
+    dlength: "",
+  });
+
   const [addProduct, { isLoading, isSuccess, isError, error }] =
     useAddProductMutation();
 
@@ -68,6 +86,26 @@ const AddProductForm = ({ open, handleClose }) => {
 
   const handleMainImageChange = (e) => {
     setMainImage(e.target.files[0]);
+  };
+
+  const handlePriceChange = (e, size) => {
+    const { name, value } = e.target;
+    if (size === "price") {
+      setPrice((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    } else if (size === "xlPrice") {
+      setXlPrice((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    } else if (size === "mdPrice") {
+      setMdPrice((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleAdditionalImagesChange = (e) => {
@@ -82,7 +120,6 @@ const AddProductForm = ({ open, handleClose }) => {
     const formData = new FormData();
     formData.append("sku", sku);
     formData.append("name", name);
-    formData.append("price", price);
     formData.append("discount", discount);
     formData.append("offerEnd", offerEnd);
     formData.append("new", isNew);
@@ -92,21 +129,17 @@ const AddProductForm = ({ open, handleClose }) => {
     formData.append("stock", stock);
     formData.append("shortDescription", shortDescription);
     formData.append("fullDescription", fullDescription);
-    formData.append("deliveryCost", deliveryCost);
 
     // Append new fields to formData
-    formData.append("brand", brand);
-    formData.append("condition", condition);
     formData.append("material", material);
-    formData.append("size", size);
     formData.append("weight", weight);
     formData.append("capacity", capacity);
+    formData.append("capacityMeasure", capacityMeasure);
     formData.append("colour", colour);
     formData.append("itemType", itemType);
     formData.append("features", features);
     formData.append("department", department);
     formData.append("shape", shape);
-    formData.append("countryOfManufacture", countryOfManufacture);
     formData.append("indoorOutdoor", indoorOutdoor);
     formData.append("originalReproduction", originalReproduction);
     formData.append("handmade", handmade);
@@ -115,6 +148,12 @@ const AddProductForm = ({ open, handleClose }) => {
     formData.append("style", style);
     formData.append("occasion", occasion);
     formData.append("category", selectedCategory);
+    formData.append("price", JSON.stringify(price));
+    formData.append("xlPrice", JSON.stringify(xlPrice));
+    formData.append("mdPrice", JSON.stringify(mdPrice));
+    formData.append("itemRelatedParts", JSON.stringify(itemRelatedParts));
+    formData.append("dimensions", JSON.stringify(dimensions));
+
 
     if (mainImage) {
       formData.append("mainImage", mainImage);
@@ -123,7 +162,7 @@ const AddProductForm = ({ open, handleClose }) => {
       formData.append("additionalImages", additionalImages[i]);
     }
 
-    await addProduct(formData).unwrap();;
+    await addProduct(formData).unwrap();
     handleClose();
   };
 
@@ -145,8 +184,10 @@ const AddProductForm = ({ open, handleClose }) => {
         }}
       >
         {isError && <Alert severity="error">{error.message}</Alert>}
-        {isSuccess && <Alert severity="success">Product added successfully</Alert>}
-        
+        {isSuccess && (
+          <Alert severity="success">Product added successfully</Alert>
+        )}
+
         <Typography variant="h6" component="h2">
           Add New Product
         </Typography>
@@ -161,6 +202,7 @@ const AddProductForm = ({ open, handleClose }) => {
                 value={sku}
                 onChange={(e) => setSku(e.target.value)}
               />
+
               <TextField
                 fullWidth
                 margin="normal"
@@ -169,21 +211,7 @@ const AddProductForm = ({ open, handleClose }) => {
                 onChange={(e) => setName(e.target.value)}
                 required
               />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Brand"
-                value={brand}
-                required
-                onChange={(e) => setBrand(e.target.value)}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Condition"
-                value={condition}
-                onChange={(e) => setCondition(e.target.value)}
-              />
+
               <TextField
                 fullWidth
                 margin="normal"
@@ -195,10 +223,31 @@ const AddProductForm = ({ open, handleClose }) => {
               <TextField
                 fullWidth
                 margin="normal"
-                label="Size"
-                value={size}
-                onChange={(e) => setSize(e.target.value)}
+                label="Base Price"
+                name="basePrice"
+                type="number"
+                value={price.basePrice}
+                onChange={(e) => handlePriceChange(e, "price")}
               />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="XL Base Price"
+                name="xlBasePrice"
+                type="number"
+                value={xlPrice.xlBasePrice}
+                onChange={(e) => handlePriceChange(e, "xlPrice")}
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="MD Base Price"
+                name="mdBasePrice"
+                type="number"
+                value={mdPrice.mdBasePrice}
+                onChange={(e) => handlePriceChange(e, "mdPrice")}
+              />
+
               <TextField
                 fullWidth
                 margin="normal"
@@ -211,11 +260,21 @@ const AddProductForm = ({ open, handleClose }) => {
               <TextField
                 fullWidth
                 margin="normal"
-                label="Full Description"
-                multiline
-                rows={5}
-                value={fullDescription}
-                onChange={(e) => setFullDescription(e.target.value)}
+                label="Shape"
+                value={shape}
+                onChange={(e) => setShape(e.target.value)}
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Part Name"
+                value={itemRelatedParts.partName}
+                onChange={(e) =>
+                  setItemRelatedParts({
+                    ...itemRelatedParts,
+                    partName: e.target.value,
+                  })
+                }
               />
               <Grid item xs={3} sm={6} md={3}>
                 <Button
@@ -236,13 +295,33 @@ const AddProductForm = ({ open, handleClose }) => {
 
             {/* Middle Left */}
             <Grid item xs={12} sm={6} md={3}>
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Capacity"
-                value={capacity}
-                onChange={(e) => setCapacity(e.target.value)}
-              />
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    type="number"
+                    label="Capacity"
+                    value={capacity}
+                    onChange={(e) => setCapacity(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="Measure"
+                    value={capacityMeasure}
+                    onChange={(e) => setCapcityMeasure(e.target.value)}
+                    select
+                  >
+                    <MenuItem value="liters">Liters</MenuItem>
+                    <MenuItem value="kg">Kilograms</MenuItem>
+                    <MenuItem value="ml">Milliliters</MenuItem>
+                    {/* Add more units as needed */}
+                  </TextField>
+                </Grid>
+              </Grid>
               <TextField
                 fullWidth
                 margin="normal"
@@ -250,6 +329,7 @@ const AddProductForm = ({ open, handleClose }) => {
                 value={colour}
                 onChange={(e) => setColour(e.target.value)}
               />
+
               <TextField
                 fullWidth
                 margin="normal"
@@ -260,40 +340,129 @@ const AddProductForm = ({ open, handleClose }) => {
               <TextField
                 fullWidth
                 margin="normal"
-                label="Features"
-                value={features}
-                onChange={(e) => setFeatures(e.target.value)}
+                label="oneDayPremium"
+                name="oneDayPremium"
+                value={price.oneDayPremium}
+                type="number"
+                onChange={(e) => handlePriceChange(e, "price")}
               />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="XL One DayPremium"
+                name="xlOneDayPremium"
+                type="number"
+                value={xlPrice.xlOneDayPremium}
+                onChange={(e) => handlePriceChange(e, "xlPrice")}
+              />
+
+              <TextField
+                fullWidth
+                margin="normal"
+                label="MD oneDay Premium"
+                name="mdOneDayPremium"
+                type="number"
+                value={mdPrice.mdOneDayPremium}
+                onChange={(e) => handlePriceChange(e, "mdPrice")}
+              />
+
+              <FormControl fullWidth margin="normal">
+                <InputLabel>Features</InputLabel>
+                <Select
+                  label="Features"
+                  value={features}
+                  onChange={(e) => setFeatures(e.target.value)}
+                  multiple
+                  renderValue={(selected) => selected.join(", ")}
+                >
+                  <MenuItem value="Eco-friendly">Eco-friendly</MenuItem>
+                  <MenuItem value="Handmade">Handmade</MenuItem>
+                  <MenuItem value="Durable">Durable</MenuItem>
+                  <MenuItem value="Smooth">Smooth</MenuItem>
+                  <MenuItem value="Lightweight">Lightweight</MenuItem>
+                  <MenuItem value="Natural">Natural</MenuItem>
+                  <MenuItem value="Organic">Organic</MenuItem>
+                  <MenuItem value="Fresh">Fresh</MenuItem>
+                  <MenuItem value="Pure">Pure</MenuItem>
+                  <MenuItem value="PH Balance">PH Balance</MenuItem>
+                  <MenuItem value="Test">Test</MenuItem>
+                  <MenuItem value="Plastic Free">Plastic Free</MenuItem>
+                  <MenuItem value="Sustainable">Sustainable</MenuItem>
+                  <MenuItem value="Replacement for Plastic">
+                    Replacement for Plastic
+                  </MenuItem>
+                  <MenuItem value="Decoration">Decoration</MenuItem>
+                  <MenuItem value="High Quality">High Quality</MenuItem>
+                  <MenuItem value="Hand Painted">Hand Painted</MenuItem>
+                  <MenuItem value="Double Handle">Double Handle</MenuItem>
+                  <MenuItem value="Reusable">Reusable</MenuItem>
+                </Select>
+              </FormControl>
+
               <TextField
                 fullWidth
                 margin="normal"
                 label="Department"
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Shape"
-                value={shape}
-                onChange={(e) => setShape(e.target.value)}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Country of Manufacture"
-                value={countryOfManufacture}
-                onChange={(e) => setCountryOfManufacture(e.target.value)}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Short Description"
-                multiline
-                rows={3}
-                value={shortDescription}
-                onChange={(e) => setShortDescription(e.target.value)}
-              />
+                select // This makes the TextField a select list
+              >
+                <MenuItem value="Women">Women</MenuItem>
+                <MenuItem value="Men">Men</MenuItem>
+                <MenuItem value="Unisex">Unisex</MenuItem>
+                <MenuItem value="Girl">Girl</MenuItem>
+                <MenuItem value="Boy">Boy</MenuItem>
+                <MenuItem value="Adult">Adult</MenuItem>
+                <MenuItem value="Teen">Teen</MenuItem>
+              </TextField>
+
+              <Grid container spacing={2}>
+                <Grid item xs={4}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    type="number"
+                    label="Height"
+                    value={itemRelatedParts.height}
+                    onChange={(e) =>
+                      setItemRelatedParts({
+                        ...itemRelatedParts,
+                        height: e.target.value,
+                      })
+                    }
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    type="number"
+                    label="Width"
+                    value={itemRelatedParts.width}
+                    onChange={(e) =>
+                      setItemRelatedParts({
+                        ...itemRelatedParts,
+                        width: e.target.value,
+                      })
+                    }
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    type="number"
+                    label="Length"
+                    value={itemRelatedParts.length}
+                    onChange={(e) =>
+                      setItemRelatedParts({
+                        ...itemRelatedParts,
+                        length: e.target.value,
+                      })
+                    }
+                  />
+                </Grid>
+              </Grid>
               <Button
                 variant="contained"
                 component="label"
@@ -318,20 +487,59 @@ const AddProductForm = ({ open, handleClose }) => {
                 label="Indoor/Outdoor"
                 value={indoorOutdoor}
                 onChange={(e) => setIndoorOutdoor(e.target.value)}
-              />
+                select
+              >
+                <MenuItem value="Indoor">Indoor</MenuItem>
+                <MenuItem value="Outdoor">Outdoor</MenuItem>
+              </TextField>
               <TextField
                 fullWidth
                 margin="normal"
                 label="Original/Reproduction"
                 value={originalReproduction}
                 onChange={(e) => setOriginalReproduction(e.target.value)}
+                select
+              >
+                <MenuItem value="Original">Original</MenuItem>
+                <MenuItem value="Reproduction">Reproduction</MenuItem>
+              </TextField>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Handmade or Machine Made"
+                value={handmade}
+                onChange={(e) => setHandmade(e.target.value)}
+                select
+              >
+                <MenuItem value="Handmade">Handmade</MenuItem>
+                <MenuItem value="Machine Made">Machine Made</MenuItem>
+              </TextField>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="twoDayPremium"
+                value={price.twoDayPremium}
+                name="twoDayPremium"
+                type="number"
+                onChange={(e) => handlePriceChange(e, "price")}
               />
               <TextField
                 fullWidth
                 margin="normal"
-                label="Handmade"
-                value={handmade}
-                onChange={(e) => setHandmade(e.target.value)}
+                label="XL Base twoDayPremium"
+                name="xlTwoDayPremium"
+                type="number"
+                value={xlPrice.xlTwoDayPremium}
+                onChange={(e) => handlePriceChange(e, "xlPrice")}
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="MD Base twoDayPremium"
+                name="mdTwoDayPremium"
+                type="number"
+                value={mdPrice.mdTwoDayPremium}
+                onChange={(e) => handlePriceChange(e, "mdPrice")}
               />
               <TextField
                 fullWidth
@@ -342,14 +550,7 @@ const AddProductForm = ({ open, handleClose }) => {
                 value={unitQuantity}
                 onChange={(e) => setUnitQuantity(e.target.value)}
               />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Product ID"
-                value={productId}
-                required
-                onChange={(e) => setProductId(e.target.value)}
-              />
+
               <TextField
                 fullWidth
                 margin="normal"
@@ -357,26 +558,61 @@ const AddProductForm = ({ open, handleClose }) => {
                 value={style}
                 onChange={(e) => setStyle(e.target.value)}
               />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Occasion"
-                value={occasion}
-                onChange={(e) => setOccasion(e.target.value)}
-              />
             </Grid>
 
             {/* Right Side */}
             <Grid item xs={12} sm={6} md={3}>
-              <TextField
-                fullWidth
-                margin="normal"
-                required
-                type="number"
-                label="Price"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-              />
+              
+            <Grid container spacing={2}>
+                <Grid item xs={4}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    type="number"
+                    label="Height"
+                    name="dheight"
+                    value={dimensions.dheight}
+                    onChange={(e) =>
+                      setDimensions({
+                        ...dimensions,
+                        dheight: e.target.value,
+                      })
+                    }
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                <TextField
+                    fullWidth
+                    margin="normal"
+                    type="number"
+                    label="Width"
+                    name="dwidht"
+                    value={dimensions.dwidth}
+                    onChange={(e) =>
+                      setDimensions({
+                        ...dimensions,
+                        dwidth: e.target.value,
+                      })
+                    }
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                <TextField
+                    fullWidth
+                    margin="normal"
+                    type="number"
+                    label="length"
+                    name="dlength"
+                    value={dimensions.dlength}
+                    onChange={(e) =>
+                      setDimensions({
+                        ...dimensions,
+                        dlength: e.target.value,
+                      })
+                    }
+                  />
+                </Grid>
+              </Grid>
               <TextField
                 fullWidth
                 margin="normal"
@@ -414,10 +650,9 @@ const AddProductForm = ({ open, handleClose }) => {
               <TextField
                 fullWidth
                 margin="normal"
-                placeholder="stock"
+                label="stock"
                 type="number"
                 value={stock}
-          
                 onChange={(e) => setStock(e.target.value)}
               />
               <FormControl fullWidth margin="normal">
@@ -434,10 +669,44 @@ const AddProductForm = ({ open, handleClose }) => {
                   ))}
                 </Select>
               </FormControl>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Product ID"
+                value={productId}
+                required
+                onChange={(e) => setProductId(e.target.value)}
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Occasion"
+                value={occasion}
+                onChange={(e) => setOccasion(e.target.value)}
+              />
             </Grid>
           </Grid>
 
-          <Grid item xs={12}></Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Short Description"
+              multiline
+              rows={3}
+              value={shortDescription}
+              onChange={(e) => setShortDescription(e.target.value)}
+            />
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Full Description"
+              multiline
+              rows={5}
+              value={fullDescription}
+              onChange={(e) => setFullDescription(e.target.value)}
+            />
+          </Grid>
 
           <Button type="submit" variant="contained" color="primary">
             Add Product
