@@ -13,7 +13,8 @@ import {
   FormControl,
 } from "@mui/material";
 import { useAddProductMutation, useGetCategoryQuery } from "state/api";
-
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 const AddProductForm = ({ open, handleClose }) => {
   const [sku, setSku] = useState("");
   const [name, setName] = useState("");
@@ -51,19 +52,25 @@ const AddProductForm = ({ open, handleClose }) => {
   const [price, setPrice] = useState({
     basePrice: "",
     oneDayPremium: "",
+    oneDayPremiumSecondItem: "",
     twoDayPremium: "",
+    twoDayPremiumSecondItem: "",
   });
 
   const [xlPrice, setXlPrice] = useState({
     xlBasePrice: "",
     xlOneDayPremium: "",
+    xlOneDayPremiumSecondItem: "",
     xlTwoDayPremium: "",
+    xlTwoDayPremiumSecondItem: "",
   });
 
   const [mdPrice, setMdPrice] = useState({
     mdBasePrice: "",
     mdOneDayPremium: "",
+    mdOneDayPremiumSecondItem: "",
     mdTwoDayPremium: "",
+    mdTwoDayPremiumSecondItem: "",
   });
   const [itemRelatedParts, setItemRelatedParts] = useState({
     partName: "",
@@ -72,7 +79,7 @@ const AddProductForm = ({ open, handleClose }) => {
     length: "",
   });
 
-  const [dimensions,setDimensions]=useState({
+  const [dimensions, setDimensions] = useState({
     dwidth: "",
     dheight: "",
     dlength: "",
@@ -154,7 +161,6 @@ const AddProductForm = ({ open, handleClose }) => {
     formData.append("itemRelatedParts", JSON.stringify(itemRelatedParts));
     formData.append("dimensions", JSON.stringify(dimensions));
 
-
     if (mainImage) {
       formData.append("mainImage", mainImage);
     }
@@ -165,6 +171,37 @@ const AddProductForm = ({ open, handleClose }) => {
     await addProduct(formData).unwrap();
     handleClose();
   };
+  const quillModules = {
+    toolbar: [
+      [{ header: "1" }, { header: "2" }, { font: [] }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["bold", "italic", "underline", "strike"],
+      [{ color: [] }, { background: [] }], // Color options for text and background
+      [{ script: "sub" }, { script: "super" }],
+      [{ align: [] }],
+      ["blockquote", "code-block"],
+      ["link", "image"],
+      ["clean"], // remove formatting button
+    ],
+  };
+  const quillFormats = [
+    "header",
+    "font",
+    "list",
+    "bullet",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "color", // Allow text color formatting
+    "background", // Allow background color formatting
+    "script",
+    "align",
+    "blockquote",
+    "code-block",
+    "link",
+    "image",
+  ];
 
   return (
     <Modal open={open} onClose={handleClose}>
@@ -267,7 +304,7 @@ const AddProductForm = ({ open, handleClose }) => {
               <TextField
                 fullWidth
                 margin="normal"
-                label="Part Name"
+                label="Additional Part Name"
                 value={itemRelatedParts.partName}
                 onChange={(e) =>
                   setItemRelatedParts({
@@ -337,34 +374,84 @@ const AddProductForm = ({ open, handleClose }) => {
                 value={itemType}
                 onChange={(e) => setItemType(e.target.value)}
               />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="oneDayPremium"
-                name="oneDayPremium"
-                value={price.oneDayPremium}
-                type="number"
-                onChange={(e) => handlePriceChange(e, "price")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="XL One DayPremium"
-                name="xlOneDayPremium"
-                type="number"
-                value={xlPrice.xlOneDayPremium}
-                onChange={(e) => handlePriceChange(e, "xlPrice")}
-              />
 
-              <TextField
-                fullWidth
-                margin="normal"
-                label="MD oneDay Premium"
-                name="mdOneDayPremium"
-                type="number"
-                value={mdPrice.mdOneDayPremium}
-                onChange={(e) => handlePriceChange(e, "mdPrice")}
-              />
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="oneDay pre-1st"
+                    name="oneDayPremium"
+                    value={price.oneDayPremium}
+                    type="number"
+                    onChange={(e) => handlePriceChange(e, "price")}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="oneDay pre-2nd"
+                    name="oneDayPremiumSecondItem"
+                    value={price.oneDayPremiumSecondItem}
+                    type="number"
+                    onChange={(e) => handlePriceChange(e, "price")}
+                  />
+                </Grid>
+              </Grid>
+
+              {/* xl premium */}
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="XL-1DayPre-1st"
+                    name="xlOneDayPremium"
+                    type="number"
+                    value={xlPrice.xlOneDayPremium}
+                    onChange={(e) => handlePriceChange(e, "xlPrice")}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="XL-1DayPre-2nd"
+                    name="xlOneDayPremiumSecondItem"
+                    value={xlPrice.xlOneDayPremiumSecondItem}
+                    type="number"
+                    onChange={(e) => handlePriceChange(e, "xlPrice")}
+                  />
+                </Grid>
+              </Grid>
+
+              {/* medium price */}
+
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="MD-1DayPre-1st"
+                    name="mdOneDayPremium"
+                    type="number"
+                    value={mdPrice.mdOneDayPremium}
+                    onChange={(e) => handlePriceChange(e, "mdPrice")}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="MD-1DayPre-2nd"
+                    name="mdOneDayPremiumSecondItem"
+                    type="number"
+                    value={mdPrice.mdOneDayPremiumSecondItem}
+                    onChange={(e) => handlePriceChange(e, "mdPrice")}
+                  />
+                </Grid>
+              </Grid>
 
               <FormControl fullWidth margin="normal">
                 <InputLabel>Features</InputLabel>
@@ -514,33 +601,86 @@ const AddProductForm = ({ open, handleClose }) => {
                 <MenuItem value="Handmade">Handmade</MenuItem>
                 <MenuItem value="Machine Made">Machine Made</MenuItem>
               </TextField>
-              <TextField
-                fullWidth
-                margin="normal"
-                label="twoDayPremium"
-                value={price.twoDayPremium}
-                name="twoDayPremium"
-                type="number"
-                onChange={(e) => handlePriceChange(e, "price")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="XL Base twoDayPremium"
-                name="xlTwoDayPremium"
-                type="number"
-                value={xlPrice.xlTwoDayPremium}
-                onChange={(e) => handlePriceChange(e, "xlPrice")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="MD Base twoDayPremium"
-                name="mdTwoDayPremium"
-                type="number"
-                value={mdPrice.mdTwoDayPremium}
-                onChange={(e) => handlePriceChange(e, "mdPrice")}
-              />
+
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="twoDayPre 1st"
+                    value={price.twoDayPremium}
+                    name="twoDayPremium"
+                    type="number"
+                    onChange={(e) => handlePriceChange(e, "price")}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="twoDayPre 2nd"
+                    value={price.twoDayPremiumSecondItem}
+                    name="twoDayPremiumSecondItem"
+                    type="number"
+                    onChange={(e) => handlePriceChange(e, "price")}
+                  />
+                </Grid>
+              </Grid>
+
+              {/* xl premium */}
+
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="XL-2DayPre-1st"
+                    name="xlTwoDayPremium"
+                    type="number"
+                    value={xlPrice.xlTwoDayPremium}
+                    onChange={(e) => handlePriceChange(e, "xlPrice")}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="XL-2DayPre-2nd"
+                    name="xlTwoDayPremiumSecondItem"
+                    type="number"
+                    value={xlPrice.xlTwoDayPremiumSecondItem}
+                    onChange={(e) => handlePriceChange(e, "xlPrice")}
+                  />
+                </Grid>
+              </Grid>
+
+              {/* medium price */}
+
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="MD-2DayPre-1st"
+                    name="mdTwoDayPremium"
+                    type="number"
+                    value={mdPrice.mdTwoDayPremium}
+                    onChange={(e) => handlePriceChange(e, "mdPrice")}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="MD-2DayPre-2nd"
+                    name="mdTwoDayPremiumSecondItem"
+                    type="number"
+                    value={mdPrice.mdTwoDayPremiumSecondItem}
+                    onChange={(e) => handlePriceChange(e, "mdPrice")}
+                  />
+                </Grid>
+              </Grid>
+
               <TextField
                 fullWidth
                 margin="normal"
@@ -562,8 +702,7 @@ const AddProductForm = ({ open, handleClose }) => {
 
             {/* Right Side */}
             <Grid item xs={12} sm={6} md={3}>
-              
-            <Grid container spacing={2}>
+              <Grid container spacing={2}>
                 <Grid item xs={4}>
                   <TextField
                     fullWidth
@@ -581,7 +720,7 @@ const AddProductForm = ({ open, handleClose }) => {
                   />
                 </Grid>
                 <Grid item xs={4}>
-                <TextField
+                  <TextField
                     fullWidth
                     margin="normal"
                     type="number"
@@ -597,7 +736,7 @@ const AddProductForm = ({ open, handleClose }) => {
                   />
                 </Grid>
                 <Grid item xs={4}>
-                <TextField
+                  <TextField
                     fullWidth
                     margin="normal"
                     type="number"
@@ -686,29 +825,30 @@ const AddProductForm = ({ open, handleClose }) => {
               />
             </Grid>
           </Grid>
+          <p>short Description</p>
+          <ReactQuill
+            value={shortDescription}
+            onChange={setShortDescription}
+            modules={quillModules}
+            formats={quillFormats}
+            placeholder="Enter short description"
+          />
+          <p>full Description</p>
+          <ReactQuill
+            value={fullDescription}
+            onChange={setFullDescription}
+            modules={quillModules}
+            formats={quillFormats}
+            placeholder="Enter full description"
+            style={{ color: "white" }}
+          />
 
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Short Description"
-              multiline
-              rows={3}
-              value={shortDescription}
-              onChange={(e) => setShortDescription(e.target.value)}
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Full Description"
-              multiline
-              rows={5}
-              value={fullDescription}
-              onChange={(e) => setFullDescription(e.target.value)}
-            />
-          </Grid>
-
-          <Button type="submit" variant="contained" color="primary">
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            sx={{ mt: 2 }}
+          >
             Add Product
           </Button>
         </form>
