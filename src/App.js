@@ -20,6 +20,9 @@ import Delivery from "scenes/products/Delivery";
 import ProductStock from "scenes/indentory/ProductStock";
 import OrderHistory from "scenes/indentory/OrderHistory";
 import Category from "scenes/category";
+import variation from "scenes/variation";
+import Variation from "scenes/variation";
+
 
 function App() {
   const mode = useSelector((state) => state.global.mode);
@@ -46,7 +49,8 @@ function App() {
               <Route path="/delivery" element ={<Delivery/>}/>
               <Route path="/inventory" element ={<ProductStock/>}/>
               <Route path="/orderHistory" element ={<OrderHistory/>}/>       
-              <Route path="/category" element ={<Category/>}/>       
+              <Route path="/category" element ={<Category/>}/>
+              <Route path="/variation" element ={<Variation/>}/>       
             </Route>
           </Routes>
         </ThemeProvider>

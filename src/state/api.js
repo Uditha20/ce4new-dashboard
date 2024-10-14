@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_BASE_URL }),
   reducerPath: "adminApi",
-  credentials: 'include',
+  credentials: "include",
   tagTypes: [
     "User",
     "Products",
@@ -14,9 +14,9 @@ export const api = createApi({
     "Admins",
     "Performance",
     "Dashboard",
-   " Delivery",
-   "OrderHistory",
-   "catrgory"
+    " Delivery",
+    "OrderHistory",
+    "catrgory",
   ],
   endpoints: (build) => ({
     getUser: build.query({
@@ -26,8 +26,6 @@ export const api = createApi({
     getProducts: build.query({
       query: () => "client/products",
       providesTags: ["Products"],
-      
-
     }),
     getCustomers: build.query({
       query: () => "client/customers",
@@ -61,25 +59,35 @@ export const api = createApi({
       query: () => "general/dashboard",
       providesTags: ["Dashboard"],
     }),
-      getUserProfile: build.query({
-        query: () => "user/getUserProfile", // Change the URL if needed
-        providesTags: ["User"],
-      }),
+    getUserProfile: build.query({
+      query: () => "user/getUserProfile", // Change the URL if needed
+      providesTags: ["User"],
+    }),
     addProduct: build.mutation({
       query: (newProduct) => ({
-        url: 'client/products',
-        method: 'POST',
+        url: "client/products",
+        method: "POST",
         body: newProduct,
       }),
-      invalidatesTags: ['Products'],
+      invalidatesTags: ["Products"],
     }),
+
+    addVariation: build.mutation({
+      query: (newVariation) => ({
+        url: "productVariation/createVariation",
+        method: "POST",
+        body: newVariation,
+      }),
+      invalidatesTags: ["variation"],
+    }),
+
     addDeliveryCost: build.mutation({
       query: (newCost) => ({
-        url: 'sales/addCost',
-        method: 'POST',
+        url: "sales/addCost",
+        method: "POST",
         body: newCost,
       }),
-      invalidatesTags: ['Delivery'],
+      invalidatesTags: ["Delivery"],
     }),
     getDeliveryCost: build.query({
       query: () => "sales/getCost",
@@ -91,17 +99,20 @@ export const api = createApi({
     }),
     addCategory: build.mutation({
       query: (category) => ({
-        url: 'sales/category',
-        method: 'POST',
+        url: "sales/category",
+        method: "POST",
         body: category,
       }),
-      invalidatesTags: ['catrgory'],
+      invalidatesTags: ["catrgory"],
     }),
     getCategory: build.query({
       query: () => "sales/getCategories",
       providesTags: ["catrgory"],
     }),
-    
+    getVariation: build.query({
+      query: () => "productVariation/getVariations",
+      providesTags: ["variation"],
+    }),
   }),
 });
 
@@ -122,4 +133,6 @@ export const {
   useGetUserProfileQuery,
   useAddCategoryMutation,
   useGetCategoryQuery,
+  useGetVariationQuery,
+  useAddVariationMutation,
 } = api;

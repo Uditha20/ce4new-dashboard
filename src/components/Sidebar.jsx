@@ -52,6 +52,10 @@ const navItems = [
     icon: <ShoppingCartOutlined />,
   },
   {
+    text: "Variation",
+    icon: <ShoppingCartOutlined />,
+  },
+  {
     text: "Delivery",
     icon: <LocalShippingIcon />,
   },
