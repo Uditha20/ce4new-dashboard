@@ -6,6 +6,7 @@ function Variation({ open, handleClose, handleSubmit, isError, error, isSuccess 
   const [variationData, setVariationData] = useState({
     name: '',
     quantity: '',
+    itemQty:'',
     productId: '',
     price: {
       basePrice: '',
@@ -67,6 +68,7 @@ function Variation({ open, handleClose, handleSubmit, isError, error, isSuccess 
       formData.append('name', variationData.name);
       formData.append('quantity', variationData.quantity);
       formData.append('productId', variationData.productId);
+      formData.append('itemQty',variationData.itemQty);
       formData.append('price', JSON.stringify(variationData.price));
       formData.append('xlPrice', JSON.stringify(variationData.xlPrice));
       formData.append('mdPrice', JSON.stringify(variationData.mdPrice));
@@ -145,6 +147,14 @@ function Variation({ open, handleClose, handleSubmit, isError, error, isSuccess 
                   </option>
                 ))}
               </TextField>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Item pack include Qty"
+                type="number"
+                value={variationData.itemQty}
+                onChange={(e) => setVariationData({ ...variationData, itemQty: e.target.value })}
+              />
             </Grid>
 
             {/* Price Section */}

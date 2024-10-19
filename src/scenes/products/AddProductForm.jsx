@@ -11,6 +11,7 @@ import {
   Select,
   InputLabel,
   FormControl,
+  CircularProgress,
 } from "@mui/material";
 import { useAddProductMutation, useGetCategoryQuery } from "state/api";
 import ReactQuill from "react-quill";
@@ -38,7 +39,7 @@ const AddProductForm = ({ open, handleClose }) => {
   const [colour, setColour] = useState("");
   const [itemType, setItemType] = useState("");
   const [features, setFeatures] = useState([]);
-  const [department, setDepartment] = useState("");
+  const [department, setDepartment] = useState([]);
   const [shape, setShape] = useState("");
   const [indoorOutdoor, setIndoorOutdoor] = useState("");
   const [originalReproduction, setOriginalReproduction] = useState("");
@@ -46,8 +47,9 @@ const AddProductForm = ({ open, handleClose }) => {
   const [unitQuantity, setUnitQuantity] = useState("");
   const [productId, setProductId] = useState("");
   const [style, setStyle] = useState("");
-  const [occasion, setOccasion] = useState("");
+  const [occasion, setOccasion] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [price, setPrice] = useState({
     basePrice: "",
@@ -123,7 +125,7 @@ const AddProductForm = ({ open, handleClose }) => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     const formData = new FormData();
     formData.append("sku", sku);
     formData.append("name", name);
@@ -168,8 +170,14 @@ const AddProductForm = ({ open, handleClose }) => {
       formData.append("additionalImages", additionalImages[i]);
     }
 
-    await addProduct(formData).unwrap();
-    handleClose();
+    try {
+      await addProduct(formData).unwrap(); // Add the product
+      setLoading(false); // Stop the spinner after success
+      handleClose(); // Close modal after successful submission
+    } catch (error) {
+      setLoading(false); // Stop the spinner in case of an error
+      console.error("Error adding product", error);
+    }
   };
   const quillModules = {
     toolbar: [
@@ -224,6 +232,7 @@ const AddProductForm = ({ open, handleClose }) => {
         {isSuccess && (
           <Alert severity="success">Product added successfully</Alert>
         )}
+        {loading && <CircularProgress />}
 
         <Typography variant="h6" component="h2">
           Add New Product
@@ -355,6 +364,8 @@ const AddProductForm = ({ open, handleClose }) => {
                     <MenuItem value="liters">Liters</MenuItem>
                     <MenuItem value="kg">Kilograms</MenuItem>
                     <MenuItem value="ml">Milliliters</MenuItem>
+                    <MenuItem value="ml">grams</MenuItem>
+
                     {/* Add more units as needed */}
                   </TextField>
                 </Grid>
@@ -485,14 +496,15 @@ const AddProductForm = ({ open, handleClose }) => {
                   <MenuItem value="Reusable">Reusable</MenuItem>
                 </Select>
               </FormControl>
-
-              <TextField
+              <InputLabel>Department</InputLabel>
+              <Select
                 fullWidth
                 margin="normal"
                 label="Department"
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
-                select // This makes the TextField a select list
+                multiple // Allows multiple selections
+                renderValue={(selected) => selected.join(", ")} // Display selected values as comma-separated
               >
                 <MenuItem value="Women">Women</MenuItem>
                 <MenuItem value="Men">Men</MenuItem>
@@ -501,7 +513,7 @@ const AddProductForm = ({ open, handleClose }) => {
                 <MenuItem value="Boy">Boy</MenuItem>
                 <MenuItem value="Adult">Adult</MenuItem>
                 <MenuItem value="Teen">Teen</MenuItem>
-              </TextField>
+              </Select>
 
               <Grid container spacing={2}>
                 <Grid item xs={4}>
@@ -578,6 +590,7 @@ const AddProductForm = ({ open, handleClose }) => {
               >
                 <MenuItem value="Indoor">Indoor</MenuItem>
                 <MenuItem value="Outdoor">Outdoor</MenuItem>
+                <MenuItem value="Outdoor">Both</MenuItem>
               </TextField>
               <TextField
                 fullWidth
@@ -816,13 +829,31 @@ const AddProductForm = ({ open, handleClose }) => {
                 required
                 onChange={(e) => setProductId(e.target.value)}
               />
-              <TextField
+              <InputLabel>Occasion</InputLabel>
+              <Select
                 fullWidth
                 margin="normal"
                 label="Occasion"
                 value={occasion}
                 onChange={(e) => setOccasion(e.target.value)}
-              />
+                multiple 
+                renderValue={(selected) => selected.join(", ")} 
+              >
+                <MenuItem value="All occasions">All occasions</MenuItem>
+                <MenuItem value="Housewarming">Housewarming</MenuItem>
+                <MenuItem value="New Year">New Year</MenuItem>
+                <MenuItem value="Christmas">Christmas</MenuItem>
+                <MenuItem value="Valentine">Valentine</MenuItem>
+                <MenuItem value="Birthday">Birthday</MenuItem>
+                <MenuItem value="Anniversary">Anniversary</MenuItem>
+                <MenuItem value="Funeral">Funeral</MenuItem>
+                <MenuItem value="Wedding">Wedding</MenuItem>
+                <MenuItem value="Party">Party</MenuItem>
+                <MenuItem value="Mother's Day">Mother's Day</MenuItem>
+                <MenuItem value="Father's Day">Father's Day</MenuItem>
+                <MenuItem value="Retirement">Retirement</MenuItem>
+                <MenuItem value="Opening Day">Opening Day</MenuItem>
+              </Select>
             </Grid>
           </Grid>
           <p>short Description</p>

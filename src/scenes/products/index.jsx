@@ -127,7 +127,7 @@ const ProductRow = ({ product }) => {
 
             <Grid item xs={12}>
               <Typography variant="h6">Description</Typography>
-              <Typography>{product.shortDescription}</Typography>
+              <Typography  dangerouslySetInnerHTML={{ __html:product.shortDescription}}/>
               <Typography
                 dangerouslySetInnerHTML={{ __html: product.fullDescription }}
               />

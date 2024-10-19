@@ -29,7 +29,9 @@ import {
   PieChartOutlined,
  
 } from "@mui/icons-material";
+import AddTaskIcon from '@mui/icons-material/AddTask';
 import PersonIcon from '@mui/icons-material/Person';
+import CategoryIcon from '@mui/icons-material/Category';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import { useEffect, useState } from "react";
@@ -53,7 +55,7 @@ const navItems = [
   },
   {
     text: "Variation",
-    icon: <ShoppingCartOutlined />,
+    icon: <AddTaskIcon />,
   },
   {
     text: "Delivery",
@@ -61,7 +63,7 @@ const navItems = [
   },
   {
     text: "Category",
-    icon: <LocalShippingIcon />,
+    icon: <CategoryIcon />,
   },
   {
     text: "Customers",
