@@ -364,7 +364,7 @@ const AddProductForm = ({ open, handleClose }) => {
                     <MenuItem value="liters">Liters</MenuItem>
                     <MenuItem value="kg">Kilograms</MenuItem>
                     <MenuItem value="ml">Milliliters</MenuItem>
-                    <MenuItem value="ml">grams</MenuItem>
+                    <MenuItem value="g">grams</MenuItem>
 
                     {/* Add more units as needed */}
                   </TextField>
