@@ -40,6 +40,11 @@ const EditProduct = ({ id }) => {
     basePrice: "",
     mainImage: null,
     additionalImages: [],
+    material: "",
+    oneDayPremium: "",
+    oneDayPremiumSecondItem: "",
+    twoDayPremium: "",
+    twoDayPremiumSecondItem: "",
   });
   const [alertOpen, setAlertOpen] = useState(false); // For Snackbar
   const [previewImage, setPreviewImage] = useState(null);
@@ -61,6 +66,13 @@ const EditProduct = ({ id }) => {
         length: productDetails.dimensions?.dlength || "",
         discount: productDetails.discount || "",
         basePrice: productDetails.price.basePrice || "",
+        material: productDetails.material || "",
+        oneDayPremium: productDetails.price.oneDayPremium || "",
+        oneDayPremiumSecondItem:
+          productDetails.price.oneDayPremiumSecondItem || "",
+        twoDayPremium: productDetails.price.twoDayPremium || "",
+        twoDayPremiumSecondItem:
+          productDetails.price.twoDayPremiumSecondItem || "",
       });
     }
   }, [productDetails]);
@@ -73,7 +85,7 @@ const EditProduct = ({ id }) => {
     const file = e.target.files[0];
     if (file) {
       setFormState((prevState) => ({ ...prevState, mainImage: file }));
-      // setPreviewImage(URL.createObjectURL(file)); // Optional: Display image preview
+      setPreviewImage(URL.createObjectURL(file)); 
     }
   };
 
@@ -96,14 +108,27 @@ const EditProduct = ({ id }) => {
     formData.append("dimensions.dwidth", formState.width);
     formData.append("dimensions.dlength", formState.length);
     formData.append("discount", formState.discount);
+    formData.append("material", formState.material);
+    formData.append("price.basePrice", formState.basePrice);
+    formData.append("price.oneDayPremium", formState.oneDayPremium);
+    formData.append(
+      "price.oneDayPremiumSecondItem",
+      formState.oneDayPremiumSecondItem
+    );
+    formData.append("price.twoDayPremium", formState.twoDayPremium);
+    formData.append(
+      "price.twoDayPremiumSecondItem",
+      formState.twoDayPremiumSecondItem
+    );
+
     if (formState.mainImage) {
       formData.append("mainImage", formState.mainImage); // Attach the image file
     }
-    formState.additionalImages.forEach((image) => { 
-      formData.append("additionalImages", image); // Attach the additional image files
+    if (formState.additionalImages && formState.additionalImages.length > 0) {
+      formState.additionalImages.forEach((image) => {
+        formData.append("additionalImages", image); // Attach the additional image files
+      });
     }
-    );
-    
     try {
       await updateProduct({ id: productDetails._id, formData }).unwrap();
       setAlertOpen(true);
@@ -152,13 +177,17 @@ const EditProduct = ({ id }) => {
           <Typography variant="h4">Edit Product</Typography>
         </Grid>
       </Grid>
+      <Box
+      sx={{
+        maxHeight: "100vh", // Limit height to the viewport
+        overflowY: "auto", // Enable vertical scrolling
+        padding: 2,
+      
+      }}
+    >
       <form>
         {/* 1st grid */}
-        <Grid container spacing={2} sx={
-          {
-            
-          }
-        }>
+        <Grid container spacing={2} sx={{}}>
           <Grid item xs={12} sm={6} md={3}>
             <TextField
               fullWidth
@@ -177,78 +206,15 @@ const EditProduct = ({ id }) => {
               value={formState.name}
               onChange={handleInputChange}
             />
-            <Grid item xs={3} sm={6} md={3}>
-              <Button
-                variant="contained"
-                component="label"
-                sx={{ mt: 2, mb: 1 }}
-              >
-                Upload Main Image
-                <input
-                  type="file"
-                  hidden
-                  accept="image/*"
-                  onChange={handleImageChange} // Handle file input change
-                />
-              </Button>
-              {previewImage && (
-                <img
-                  src={previewImage}
-                  alt="Preview"
-                  style={{ marginTop: "10px", maxHeight: "100px" }}
-                />
-              )}
-            </Grid>
-            <Grid item xs={12}>
-              <Button
-                variant="contained"
-                component="label"
-                sx={{ mt: 2, mb: 1 }}
-              >
-                Upload Additional Images
-                <input
-                  type="file"
-                  hidden
-                  accept="image/*"
-                  multiple
-                  onChange={handleAdditionalImagesChange}
-                />
-              </Button>
-              <Grid container spacing={2} sx={{ mt: 2 }}>
-                {Array.isArray(formState.additionalImages) &&
-                  formState.additionalImages.map((image, index) => (
-                    <Grid item xs={4} key={index}>
-                      <img
-                        src={URL.createObjectURL(image)} // Preview image
-                        alt={`Additional Preview ${index + 1}`}
-                        style={{ maxWidth: "100%", maxHeight: "100px" }}
-                      />
-                    </Grid>
-                  ))}
-              </Grid>
-            </Grid>
-            {/* <TextField
-              fullWidth
-              margin="normal"
-              label="Base Price"
-              name="basePrice"
-              type="number"
-              value={formState.basePrice}
-            /> */}
-            {/* <TextField
-              fullWidth
-              margin="normal"
-              label="XL Base Price"
-              name="xlBasePrice"
-              type="number"
-            />
             <TextField
               fullWidth
               margin="normal"
-              label="MD Base Price"
-              name="mdBasePrice"
-              type="number"
-            /> */}
+              label="basePrice"
+              name="basePrice"
+              value={formState.basePrice}
+              onChange={handleInputChange}
+            />
+           
           </Grid>
 
           {/* second grid */}
@@ -271,28 +237,32 @@ const EditProduct = ({ id }) => {
               onChange={handleInputChange}
             />
 
-            {/* <TextField fullWidth margin="normal" label="Material" />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Base Price"
-              name="basePrice"
-              type="number"
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="XL Base Price"
-              name="xlBasePrice"
-              type="number"
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="MD Base Price"
-              name="mdBasePrice"
-              type="number"
-            /> */}
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  type="number"
+                  label="oneDay pre-1st"
+                  name="oneDayPremium"
+                  value={formState.oneDayPremium}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="oneDay pre-2nd"
+                  name="oneDayPremiumSecondItem"
+                  type="number"
+                  value={formState.oneDayPremiumSecondItem}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+            </Grid>
+
+           
           </Grid>
 
           {/* third grid */}
@@ -332,10 +302,98 @@ const EditProduct = ({ id }) => {
                 />
               </Grid>
             </Grid>
+            <TextField
+              fullWidth
+              margin="normal"
+              label="material"
+              name="material"
+              value={formState.material}
+              onChange={handleInputChange}
+            />
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  type="number"
+                  label="twoDayPre 1st"
+                  name="twoDayPremium"
+                  value={formState.twoDayPremium}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="twoDayPre 2nd"
+                  name="twoDayPremiumSecondItem"
+                  type="number"
+                  value={formState.twoDayPremiumSecondItem}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+            </Grid>
           </Grid>
+
+          <Grid item xs={12} sm={12} md={12}>
+
+          <Grid item >
+              <Button
+                variant="contained"
+                component="label"
+                sx={{ mt: 2, mb: 1 }}
+              >
+                Upload Main Image
+                <input
+                  type="file"
+                  hidden
+                  accept="image/*"
+                  onChange={handleImageChange} // Handle file input change
+                />
+              </Button>
+              {previewImage && (
+                <img
+                  src={previewImage}
+                  alt="Preview"
+                  style={{ marginTop: "2px", maxHeight: "80px" }}
+                />
+              )}
+            </Grid>
+            </Grid>
+
+            <Grid item>
+              <Button
+                variant="contained"
+                component="label"
+                sx={{ mt: 2, mb: 1 }}
+              >
+                Upload Additional Images
+                <input
+                  type="file"
+                  hidden
+                  accept="image/*"
+                  multiple
+                  onChange={handleAdditionalImagesChange}
+                />
+              </Button>
+              <Grid container spacing={2} sx={{ mt: 2 }}>
+                {Array.isArray(formState.additionalImages) &&
+                  formState.additionalImages.map((image, index) => (
+                    <Grid item  key={index}>
+                      <img
+                        src={URL.createObjectURL(image)} // Preview image
+                        alt={`Additional Preview ${index + 1}`}
+                        style={{ maxWidth: "100%", maxHeight: "50px" }}
+                      />
+                    </Grid>
+                  ))}
+              </Grid>
+            </Grid>
+           
         </Grid>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
+       
+          <Grid item xs={12} sx={{mb:5}}>
             <Button
               variant="contained"
               color="primary"
@@ -344,9 +402,10 @@ const EditProduct = ({ id }) => {
             >
               {isUpdating ? "Saving..." : "Save Changes"}
             </Button>
-          </Grid>
+    
         </Grid>
       </form>
+      </Box>
     </>
   );
 };

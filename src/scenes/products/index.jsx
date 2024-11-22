@@ -121,18 +121,18 @@ const ProductRow = ({ product }) => {
 
             <Grid item xs={12} md={6}>
               <Typography variant="h6">Pricing</Typography>
-              <Typography>Base Price: ${product.price.basePrice}</Typography>
+              <Typography>Base Price: {product.price.basePrice}</Typography>
               <Typography>
-                1 Day Premium: ${product.price.oneDayPremium}
+                1 Day Premium: {product.price.oneDayPremium}
               </Typography>
               <Typography>
-                2 Day Premium: ${product.price.twoDayPremium}
+                2 Day Premium: {product.price.twoDayPremium}
               </Typography>
               <Typography>
-                XL Base Price: ${product.xlPrice.xlBasePrice}
+                XL Base Price: {product.xlPrice.xlBasePrice}
               </Typography>
               <Typography>
-                MD Base Price: ${product.mdPrice.mdBasePrice}
+                MD Base Price: {product.mdPrice.mdBasePrice}
               </Typography>
               <Typography>Discount: {product.discount}%</Typography>
               <Typography>
