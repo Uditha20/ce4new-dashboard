@@ -813,9 +813,10 @@ const AddProductForm = ({ open, handleClose }) => {
                   label="Category"
                   onChange={handleCategoryChange}
                   fullWidth
+
                 >
                   {categories.map((category) => (
-                    <MenuItem key={category.id} value={category.name}>
+                    <MenuItem key={category._id} value={category.name}>
                       {category.name}
                     </MenuItem>
                   ))}

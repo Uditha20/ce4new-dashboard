@@ -72,6 +72,14 @@ export const api = createApi({
       invalidatesTags: ["Products"],
     }),
 
+    updateProduct: build.mutation({
+      query: ({ id, formData }) => ({
+        url: `client/products/${id}`, // Endpoint for updating the product
+        method: "PUT",
+        body: formData, // Use FormData as the request body
+      }),
+    }),
+
     addVariation: build.mutation({
       query: (newVariation) => ({
         url: "productVariation/createVariation",
@@ -135,4 +143,5 @@ export const {
   useGetCategoryQuery,
   useGetVariationQuery,
   useAddVariationMutation,
+  useUpdateProductMutation 
 } = api;

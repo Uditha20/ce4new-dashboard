@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "components/Header";
 import AddProductForm from "./AddProductForm";
 import { useGetProductsQuery } from "state/api";
+import EditProduct from "./EditProduct";
 
 const ProductRow = ({ product }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,6 +29,19 @@ const ProductRow = ({ product }) => {
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
+
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [currentProductId, setCurrentProductId] = useState(null);
+
+  const showEditModal = (id) => {
+    setCurrentProductId(id);
+    setIsEditModalVisible(true);
+  };
+
+  const hideEditModal = () => {
+    setIsEditModalVisible(false);
+    setCurrentProductId(null);
+  };
 
   return (
     <>
@@ -45,8 +59,31 @@ const ProductRow = ({ product }) => {
             View Details
           </Button>
         </TableCell>
+        <TableCell>
+          <Button
+            variant="contained"
+            size="small"
+            color="primary"
+            onClick={() => showEditModal(product._id)}
+          >
+            Edit
+          </Button>
+        </TableCell>
       </TableRow>
-
+      <Modal open={isEditModalVisible} onClose={hideEditModal}>
+        <Box
+          sx={{
+            width: 1200,
+            margin: "auto",
+            mt: 5,
+            p: 2,
+            bgcolor: "background.paper",
+            borderRadius: 2,
+          }}
+        >
+          <EditProduct id={currentProductId} />
+        </Box>
+      </Modal>
       <Modal open={isModalOpen} onClose={handleCloseModal}>
         <Box
           sx={{
@@ -105,9 +142,9 @@ const ProductRow = ({ product }) => {
 
             <Grid item xs={12} md={6}>
               <Typography variant="h6">Dimensions & Weight</Typography>
-              <Typography>Width: {product.dimensions.dwidth}</Typography>
-              <Typography>Height: {product.dimensions.dheight}</Typography>
-              <Typography>Length: {product.dimensions.dlength}</Typography>
+              <Typography>Width: {product.dimensions && product.dimensions.dwidth}</Typography>
+              <Typography>Height: {product.dimensions &&  product.dimensions.dheight}</Typography>
+              <Typography>Length: {product.dimensions &&  product.dimensions.dlength}</Typography>
               <Typography>Weight: {product.weight}</Typography>
               <Typography>
                 Capacity: {product.capacity} {product.capacityMeasure}
@@ -127,7 +164,9 @@ const ProductRow = ({ product }) => {
 
             <Grid item xs={12}>
               <Typography variant="h6">Description</Typography>
-              <Typography  dangerouslySetInnerHTML={{ __html:product.shortDescription}}/>
+              <Typography
+                dangerouslySetInnerHTML={{ __html: product.shortDescription }}
+              />
               <Typography
                 dangerouslySetInnerHTML={{ __html: product.fullDescription }}
               />
@@ -240,6 +279,7 @@ const Products = () => {
                 <TableCell>Rating</TableCell>
                 <TableCell>Stock</TableCell>
                 <TableCell>Actions</TableCell>
+                <TableCell>Edit</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
