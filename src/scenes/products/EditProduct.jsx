@@ -45,6 +45,11 @@ const EditProduct = ({ id }) => {
     oneDayPremiumSecondItem: "",
     twoDayPremium: "",
     twoDayPremiumSecondItem: "",
+    rating: "",
+    stock: "",
+    weight: "",
+    shortDescription: "",
+    fullDescription: "",
   });
   const [alertOpen, setAlertOpen] = useState(false); // For Snackbar
   const [previewImage, setPreviewImage] = useState(null);
@@ -73,6 +78,12 @@ const EditProduct = ({ id }) => {
         twoDayPremium: productDetails.price.twoDayPremium || "",
         twoDayPremiumSecondItem:
           productDetails.price.twoDayPremiumSecondItem || "",
+
+        rating: productDetails.rating || "",
+        stock: productDetails.stock || "",
+        weight: productDetails.weight || "",
+        shortDescription: productDetails.shortDescription || "",
+        fullDescription: productDetails.fullDescription || "",
       });
     }
   }, [productDetails]);
@@ -85,7 +96,7 @@ const EditProduct = ({ id }) => {
     const file = e.target.files[0];
     if (file) {
       setFormState((prevState) => ({ ...prevState, mainImage: file }));
-      setPreviewImage(URL.createObjectURL(file)); 
+      setPreviewImage(URL.createObjectURL(file));
     }
   };
 
@@ -111,6 +122,17 @@ const EditProduct = ({ id }) => {
     formData.append("material", formState.material);
     formData.append("price.basePrice", formState.basePrice);
     formData.append("price.oneDayPremium", formState.oneDayPremium);
+
+    if (formState.stock) {
+      formData.append("stock", Number(formState.stock));
+    } 
+    if (formState.weight) {
+      formData.append("weight", Number(formState.weight));
+    }
+  
+    formData.append("shortDescription", formState.shortDescription);
+    formData.append("fullDescription", formState.fullDescription);
+
     formData.append(
       "price.oneDayPremiumSecondItem",
       formState.oneDayPremiumSecondItem
@@ -151,6 +173,46 @@ const EditProduct = ({ id }) => {
 
   console.log(productDetails);
 
+  const quillModules = {
+    toolbar: [
+      [{ header: "1" }, { header: "2" }, { font: [] }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["bold", "italic", "underline", "strike"],
+      [{ color: [] }, { background: [] }], // Color options for text and background
+      [{ script: "sub" }, { script: "super" }],
+      [{ align: [] }],
+      ["blockquote", "code-block"],
+      ["link", "image"],
+      ["clean"], // remove formatting button
+    ],
+  };
+  const quillFormats = [
+    "header",
+    "font",
+    "list",
+    "bullet",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "color", // Allow text color formatting
+    "background", // Allow background color formatting
+    "script",
+    "align",
+    "blockquote",
+    "code-block",
+    "link",
+    "image",
+  ];
+
+  const handleQuillChange = (field, value) => {
+    setFormState((prevState) => ({
+      ...prevState,
+      [field]: value, // Update the specific field dynamically
+    }));
+  };
+
+
   return (
     <>
       <Snackbar
@@ -178,188 +240,230 @@ const EditProduct = ({ id }) => {
         </Grid>
       </Grid>
       <Box
-      sx={{
-        maxHeight: "100vh", // Limit height to the viewport
-        overflowY: "auto", // Enable vertical scrolling
-        padding: 2,
-      
-      }}
-    >
-      <form>
-        {/* 1st grid */}
-        <Grid container spacing={2} sx={{}}>
-          <Grid item xs={12} sm={6} md={3}>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="SKU"
-              name="sku"
-              value={formState.sku}
-              onChange={handleInputChange}
-            />
+        sx={{
+          maxHeight: "100vh", // Limit height to the viewport
+          overflowY: "auto", // Enable vertical scrolling
+          padding: 2,
+        }}
+      >
+        <form>
+          {/* 1st grid */}
+          <Grid container spacing={2} sx={{}}>
+            <Grid item xs={12} sm={6} md={3}>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="SKU"
+                name="sku"
+                value={formState.sku}
+                onChange={handleInputChange}
+              />
 
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Name"
-              name="name"
-              value={formState.name}
-              onChange={handleInputChange}
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="basePrice"
-              name="basePrice"
-              value={formState.basePrice}
-              onChange={handleInputChange}
-            />
-           
-          </Grid>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Name"
+                name="name"
+                value={formState.name}
+                onChange={handleInputChange}
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="basePrice"
+                name="basePrice"
+                value={formState.basePrice}
+                onChange={handleInputChange}
+              />
+            </Grid>
 
-          {/* second grid */}
-          <Grid item xs={12} sm={6} md={3}>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Capacity"
-              name="capacity"
-              value={formState.capacity}
-              onChange={handleInputChange}
-            />
+            {/* second grid */}
+            <Grid item xs={12} sm={6} md={3}>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Capacity"
+                name="capacity"
+                value={formState.capacity}
+                onChange={handleInputChange}
+              />
 
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Discount"
-              name="discount"
-              value={formState.discount}
-              onChange={handleInputChange}
-            />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Discount"
+                name="discount"
+                value={formState.discount}
+                onChange={handleInputChange}
+              />
 
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  margin="normal"
-                  type="number"
-                  label="oneDay pre-1st"
-                  name="oneDayPremium"
-                  value={formState.oneDayPremium}
-                  onChange={handleInputChange}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  margin="normal"
-                  label="oneDay pre-2nd"
-                  name="oneDayPremiumSecondItem"
-                  type="number"
-                  value={formState.oneDayPremiumSecondItem}
-                  onChange={handleInputChange}
-                />
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    type="number"
+                    label="oneDay pre-1st"
+                    name="oneDayPremium"
+                    value={formState.oneDayPremium}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="oneDay pre-2nd"
+                    name="oneDayPremiumSecondItem"
+                    type="number"
+                    value={formState.oneDayPremiumSecondItem}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
               </Grid>
             </Grid>
 
-           
-          </Grid>
-
-          {/* third grid */}
-          <Grid item xs={12} sm={6} md={3}>
-            <Grid container spacing={2}>
-              <Grid item xs={4}>
-                <TextField
-                  fullWidth
-                  margin="normal"
-                  type="number"
-                  label="Height"
-                  name="height"
-                  value={formState.height}
-                  onChange={handleInputChange}
-                />
+            {/* third grid */}
+            <Grid item xs={12} sm={6} md={3}>
+              <Grid container spacing={2}>
+                <Grid item xs={4}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    type="number"
+                    label="Height"
+                    name="height"
+                    value={formState.height}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    type="number"
+                    label="Width"
+                    name="width"
+                    value={formState.width}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    type="number"
+                    label="length"
+                    name="length"
+                    value={formState.length}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  fullWidth
-                  margin="normal"
-                  type="number"
-                  label="Width"
-                  name="width"
-                  value={formState.width}
-                  onChange={handleInputChange}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  fullWidth
-                  margin="normal"
-                  type="number"
-                  label="length"
-                  name="length"
-                  value={formState.length}
-                  onChange={handleInputChange}
-                />
-              </Grid>
-            </Grid>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="material"
-              name="material"
-              value={formState.material}
-              onChange={handleInputChange}
-            />
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  margin="normal"
-                  type="number"
-                  label="twoDayPre 1st"
-                  name="twoDayPremium"
-                  value={formState.twoDayPremium}
-                  onChange={handleInputChange}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  margin="normal"
-                  label="twoDayPre 2nd"
-                  name="twoDayPremiumSecondItem"
-                  type="number"
-                  value={formState.twoDayPremiumSecondItem}
-                  onChange={handleInputChange}
-                />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="material"
+                name="material"
+                value={formState.material}
+                onChange={handleInputChange}
+              />
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    type="number"
+                    label="twoDayPre 1st"
+                    name="twoDayPremium"
+                    value={formState.twoDayPremium}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="twoDayPre 2nd"
+                    name="twoDayPremiumSecondItem"
+                    type="number"
+                    value={formState.twoDayPremiumSecondItem}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              {/* <TextField
+                fullWidth
+                margin="normal"
+                label="Rating"
+                name="rating"
+                type="number"
+                value={formState.rating}
+                onChange={handleInputChange}
+              /> */}
 
-          <Grid item xs={12} sm={12} md={12}>
-
-          <Grid item >
-              <Button
-                variant="contained"
-                component="label"
-                sx={{ mt: 2, mb: 1 }}
-              >
-                Upload Main Image
-                <input
-                  type="file"
-                  hidden
-                  accept="image/*"
-                  onChange={handleImageChange} // Handle file input change
-                />
-              </Button>
-              {previewImage && (
-                <img
-                  src={previewImage}
-                  alt="Preview"
-                  style={{ marginTop: "2px", maxHeight: "80px" }}
-                />
-              )}
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Stock"
+                name="stock"
+                value={formState.stock}
+                onChange={handleInputChange}
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="weight"
+                name="weight"
+                value={formState.weight}
+                onChange={handleInputChange}
+              />
             </Grid>
+            <Grid item xs={12}>
+              <p>short Description</p>
+              <ReactQuill
+                value={formState.shortDescription}
+                modules={quillModules}
+                formats={quillFormats}
+                placeholder="Enter short description"
+                onChange={(value) => handleQuillChange("shortDescription", value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <p>Full Description</p>
+              <ReactQuill
+                value={formState.fullDescription}
+                modules={quillModules}
+                formats={quillFormats}
+                placeholder="Enter FullDescription"
+                onChange={(value) => handleQuillChange("fullDescription", value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={12} md={12}>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  component="label"
+                  sx={{ mt: 2, mb: 1 }}
+                >
+                  Upload Main Image
+                  <input
+                    type="file"
+                    hidden
+                    accept="image/*"
+                    onChange={handleImageChange} // Handle file input change
+                  />
+                </Button>
+                {previewImage && (
+                  <img
+                    src={previewImage}
+                    alt="Preview"
+                    style={{ marginTop: "2px", maxHeight: "80px" }}
+                  />
+                )}
+              </Grid>
             </Grid>
 
             <Grid item>
@@ -380,7 +484,7 @@ const EditProduct = ({ id }) => {
               <Grid container spacing={2} sx={{ mt: 2 }}>
                 {Array.isArray(formState.additionalImages) &&
                   formState.additionalImages.map((image, index) => (
-                    <Grid item  key={index}>
+                    <Grid item key={index}>
                       <img
                         src={URL.createObjectURL(image)} // Preview image
                         alt={`Additional Preview ${index + 1}`}
@@ -390,10 +494,9 @@ const EditProduct = ({ id }) => {
                   ))}
               </Grid>
             </Grid>
-           
-        </Grid>
-       
-          <Grid item xs={12} sx={{mb:5}}>
+          </Grid>
+
+          <Grid item xs={12} sx={{ mb: 5 }}>
             <Button
               variant="contained"
               color="primary"
@@ -402,9 +505,8 @@ const EditProduct = ({ id }) => {
             >
               {isUpdating ? "Saving..." : "Save Changes"}
             </Button>
-    
-        </Grid>
-      </form>
+          </Grid>
+        </form>
       </Box>
     </>
   );
