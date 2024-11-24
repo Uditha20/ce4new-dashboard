@@ -79,6 +79,9 @@ const ProductRow = ({ product }) => {
             p: 2,
             bgcolor: "background.paper",
             borderRadius: 2,
+            maxHeight: "100vh",
+            overflow: "auto",
+            
           }}
         >
           <EditProduct id={currentProductId} />
@@ -261,14 +264,14 @@ const Products = () => {
 
       {filteredData.length > 0 ? (
         <TableContainer component={Paper} sx={{ mt: 2 }}>
-          <TextField
+          {/* <TextField
             label="Search Products"
             variant="outlined"
             size="small"
             sx={{ my: 2 }}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-          />
+          /> */}
           <Table>
             <TableHead>
               <TableRow>

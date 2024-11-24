@@ -50,6 +50,8 @@ const EditProduct = ({ id }) => {
     weight: "",
     shortDescription: "",
     fullDescription: "",
+    itemType: "",
+    made: "",
   });
   const [alertOpen, setAlertOpen] = useState(false); // For Snackbar
   const [previewImage, setPreviewImage] = useState(null);
@@ -84,6 +86,8 @@ const EditProduct = ({ id }) => {
         weight: productDetails.weight || "",
         shortDescription: productDetails.shortDescription || "",
         fullDescription: productDetails.fullDescription || "",
+        itemType: productDetails.itemType || "",
+        made: productDetails.handmade || "",
       });
     }
   }, [productDetails]);
@@ -122,6 +126,8 @@ const EditProduct = ({ id }) => {
     formData.append("material", formState.material);
     formData.append("price.basePrice", formState.basePrice);
     formData.append("price.oneDayPremium", formState.oneDayPremium);
+    formData.append("itemType", formState.itemType); 
+    formData.append("handmade", formState.made);
 
     if (formState.stock) {
       formData.append("stock", Number(formState.stock));
@@ -240,11 +246,7 @@ const EditProduct = ({ id }) => {
         </Grid>
       </Grid>
       <Box
-        sx={{
-          maxHeight: "100vh", // Limit height to the viewport
-          overflowY: "auto", // Enable vertical scrolling
-          padding: 2,
-        }}
+       
       >
         <form>
           {/* 1st grid */}
@@ -275,6 +277,18 @@ const EditProduct = ({ id }) => {
                 value={formState.basePrice}
                 onChange={handleInputChange}
               />
+               <TextField
+                fullWidth
+                margin="normal"
+                label="Handmade or Machine Made"
+                value={formState.made}
+                onChange={handleInputChange}
+                name="made"
+                select
+              >
+                <MenuItem value="Handmade">Handmade</MenuItem>
+                <MenuItem value="Machine Made">Machine Made</MenuItem>
+              </TextField>
             </Grid>
 
             {/* second grid */}
@@ -418,6 +432,14 @@ const EditProduct = ({ id }) => {
                 label="weight"
                 name="weight"
                 value={formState.weight}
+                onChange={handleInputChange}
+              />
+               <TextField
+                fullWidth
+                margin="normal"
+                label="Item type"
+                name="itemType"
+                value={formState.itemType}
                 onChange={handleInputChange}
               />
             </Grid>
