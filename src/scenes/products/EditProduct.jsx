@@ -52,6 +52,7 @@ const EditProduct = ({ id }) => {
     fullDescription: "",
     itemType: "",
     made: "",
+    colour: "",
   });
   const [alertOpen, setAlertOpen] = useState(false); // For Snackbar
   const [previewImage, setPreviewImage] = useState(null);
@@ -88,6 +89,7 @@ const EditProduct = ({ id }) => {
         fullDescription: productDetails.fullDescription || "",
         itemType: productDetails.itemType || "",
         made: productDetails.handmade || "",
+        colour: productDetails.colour || "",
       });
     }
   }, [productDetails]);
@@ -128,6 +130,7 @@ const EditProduct = ({ id }) => {
     formData.append("price.oneDayPremium", formState.oneDayPremium);
     formData.append("itemType", formState.itemType); 
     formData.append("handmade", formState.made);
+    formData.append("colour", formState.colour);
 
     if (formState.stock) {
       formData.append("stock", Number(formState.stock));
@@ -335,6 +338,14 @@ const EditProduct = ({ id }) => {
                   />
                 </Grid>
               </Grid>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="colour"
+                name="colour"
+                value={formState.colour}
+                onChange={handleInputChange}
+              />
             </Grid>
 
             {/* third grid */}

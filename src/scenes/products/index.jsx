@@ -112,6 +112,7 @@ const ProductRow = ({ product }) => {
               <Typography variant="h6">Basic Information</Typography>
               <Typography>SKU: {product.sku}</Typography>
               <Typography>Category: {product.category}</Typography>
+              <Typography>color: {product.colour}</Typography>
               <Typography>Department: {product.department}</Typography>
               <Typography>Material: {product.material}</Typography>
               <Typography>Style: {product.style}</Typography>
