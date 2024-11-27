@@ -590,7 +590,7 @@ const AddProductForm = ({ open, handleClose }) => {
               >
                 <MenuItem value="Indoor">Indoor</MenuItem>
                 <MenuItem value="Outdoor">Outdoor</MenuItem>
-                <MenuItem value="Outdoor">Both</MenuItem>
+                <MenuItem value="both">Both</MenuItem>
               </TextField>
               <TextField
                 fullWidth
