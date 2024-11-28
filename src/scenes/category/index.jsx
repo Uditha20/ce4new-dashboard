@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { useAddCategoryMutation, useGetCategoryQuery } from '../../state/api'; // Adjust the import based on your project structure
+import { useAddCategoryMutation, useGetCategoryQuery,useUpdateCategoryMutation } from '../../state/api'; // Adjust the import based on your project structure
 import Header from 'components/Header'; // Adjust the import based on your project structure
 
 const Categories = () => {
@@ -10,7 +10,8 @@ const Categories = () => {
   const [newCategory, setNewCategory] = useState({ name: '', description: '' });
   const [addCategory] = useAddCategoryMutation();
   const { data = [], isLoading } = useGetCategoryQuery();
-
+  const { refetch } = useGetCategoryQuery();
+  const [updateCategory] = useUpdateCategoryMutation();
   // Assign sequential ids to data
   const rows = data.map((item, index) => ({ ...item, id: index + 1 }));
 
@@ -29,6 +30,20 @@ const Categories = () => {
       field: 'description',
       headerName: 'Description',
       flex: 2,
+    },
+    {
+      field: 'Action',
+      headerName: 'Action',
+      flex: 2,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => handleDelete(params.row._id)}
+        >
+          Delete
+        </Button>
+      ),
     },
   ];
 
@@ -56,6 +71,16 @@ const Categories = () => {
       handleClose();
     } catch (error) {
       console.error('Failed to add category: ', error);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      // Send the delete request to the backend
+      await updateCategory(id).unwrap();
+      refetch();
+    } catch (error) {
+      console.error('Failed to delete category: ', error);
     }
   };
 
@@ -121,6 +146,10 @@ const Categories = () => {
             value={newCategory.description}
             onChange={handleChange}
           />
+
+
+
+
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">

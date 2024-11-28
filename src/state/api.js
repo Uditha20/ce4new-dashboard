@@ -113,6 +113,14 @@ export const api = createApi({
       }),
       invalidatesTags: ["catrgory"],
     }),
+
+    updateCategory: build.mutation({
+      query: (id) => ({
+        url: `sales/updateCategory/${id}`, // Backend endpoint
+        method: "PUT",
+      }),
+      invalidatesTags: ["Category"], // Invalidate cache to trigger refetch
+    }),
     getCategory: build.query({
       query: () => "sales/getCategories",
       providesTags: ["catrgory"],
@@ -143,5 +151,6 @@ export const {
   useGetCategoryQuery,
   useGetVariationQuery,
   useAddVariationMutation,
-  useUpdateProductMutation 
+  useUpdateProductMutation,
+  useUpdateCategoryMutation,
 } = api;
