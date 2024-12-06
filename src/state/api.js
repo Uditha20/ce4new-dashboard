@@ -82,7 +82,7 @@ export const api = createApi({
 
     addVariation: build.mutation({
       query: (newVariation) => ({
-        url: "productVariation/createVariation",
+        url: "client/createVariation",
         method: "POST",
         body: newVariation,
       }),

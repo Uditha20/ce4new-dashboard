@@ -20,7 +20,8 @@ import Delivery from "scenes/products/Delivery";
 import ProductStock from "scenes/indentory/ProductStock";
 import OrderHistory from "scenes/indentory/OrderHistory";
 import Category from "scenes/category";
-import Variation from "scenes/variation";
+import VariationIndex from "scenes/variation/VariationIndex";
+
 
 
 
@@ -50,7 +51,7 @@ function App() {
               <Route path="/inventory" element ={<ProductStock/>}/>
               <Route path="/orderHistory" element ={<OrderHistory/>}/>       
               <Route path="/category" element ={<Category/>}/>
-              <Route path="/variation" element ={<Variation/>}/>       
+              <Route path="/variation" element ={<VariationIndex/>}/>     
             </Route>
           </Routes>
         </ThemeProvider>
