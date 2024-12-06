@@ -119,7 +119,7 @@ function Variation({ open, handleClose, handleSubmit, isError, error, isSuccess 
                 label="Variation Name"
                 value={variationData.name}
                 onChange={(e) => setVariationData({ ...variationData, name: e.target.value })}
-                required
+               
               />
               <TextField
                 fullWidth
@@ -138,7 +138,7 @@ function Variation({ open, handleClose, handleSubmit, isError, error, isSuccess 
                 SelectProps={{
                   native: true,
                 }}
-                required
+            
               >
                 <option value="">Select Product</option>
                 {products?.map((product) => (
@@ -297,7 +297,7 @@ function Variation({ open, handleClose, handleSubmit, isError, error, isSuccess 
                 type="file"
                 accept="image/*"
                 onChange={handleImageChange}
-                required
+              
               />
 
               <Typography variant="subtitle1">Additional Images</Typography>
