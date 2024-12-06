@@ -20,8 +20,8 @@ import Delivery from "scenes/products/Delivery";
 import ProductStock from "scenes/indentory/ProductStock";
 import OrderHistory from "scenes/indentory/OrderHistory";
 import Category from "scenes/category";
-import variation from "scenes/variation";
 import Variation from "scenes/variation";
+
 
 
 function App() {

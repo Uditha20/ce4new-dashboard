@@ -31,7 +31,7 @@ const Variation = () => {
     setSelectedImages([mainImage, ...additionalImages]);
     setOpenImageModal(true);
   };
-console.log(selectedImages)
+// console.log(selectedImages)
   const handleCloseImageModal = () => {
     setOpenImageModal(false);
     setSelectedImages([]);
