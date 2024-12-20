@@ -102,8 +102,12 @@ function Variation({
       for (let i = 0; i < additionalImages.length; i++) {
         formData.append("additionalImages", additionalImages[i]);
       }
-
-      await addVariation(formData).unwrap();
+      try {
+        await addVariation(formData).unwrap();
+        handleClose();
+      } catch (error) {
+        console.error("Error adding product", error);
+      }
     } catch (error) {
       console.error("Failed to add variation:", error);
     }
@@ -223,14 +227,14 @@ function Variation({
                 onChange={(e) => handlePriceChange(e, "price")}
               />
               <TextField
-                    fullWidth
-                    margin="normal"
-                    label="XL-2DayPre-2nd"
-                    name="xlTwoDayPremiumSecondItem"
-                    type="number"
-                    value={xlPrice.xlTwoDayPremiumSecondItem}
-                    onChange={(e) => handlePriceChange(e, "xlPrice")}
-                  />
+                fullWidth
+                margin="normal"
+                label="XL-2DayPre-2nd"
+                name="xlTwoDayPremiumSecondItem"
+                type="number"
+                value={xlPrice.xlTwoDayPremiumSecondItem}
+                onChange={(e) => handlePriceChange(e, "xlPrice")}
+              />
 
               {/* XL Price */}
               <Typography variant="subtitle2">XL Price</Typography>
