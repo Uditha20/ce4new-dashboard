@@ -83,7 +83,8 @@ function Variation({
     }
   };
 
-  const handleFormSubmit = async () => {
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
     try {
       const formData = new FormData();
       formData.append("name", name);
@@ -132,7 +133,7 @@ function Variation({
         <Typography variant="h6" component="h2">
           Add New Variation
         </Typography>
-        <form onSubmit={handleFormSubmit}>
+        <form onSubmit={handleFormSubmit} method="POST">
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField

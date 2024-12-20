@@ -17,6 +17,7 @@ export const api = createApi({
     " Delivery",
     "OrderHistory",
     "catrgory",
+    "variation"
   ],
   endpoints: (build) => ({
     getUser: build.query({
