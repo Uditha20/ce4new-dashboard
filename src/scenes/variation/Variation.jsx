@@ -18,84 +18,89 @@ function Variation({
   error,
   isSuccess,
 }) {
-  const [variationData, setVariationData] = useState({
-    name: "",
-    quantity: "",
-    itemQty: "",
-    productId: "",
-    price: {
-      basePrice: "",
-      oneDayPremium: "",
-      oneDayPremiumSecondItem: "",
-      twoDayPremium: "",
-      twoDayPremiumSecondItem: "",
-    },
-    xlPrice: {
-      xlBasePrice: "",
-      xlOneDayPremium: "",
-      xlOneDayPremiumSecondItem: "",
-      xlTwoDayPremium: "",
-      xlTwoDayPremiumSecondItem: "",
-    },
-    mdPrice: {
-      mdBasePrice: "",
-      mdOneDayPremium: "",
-      mdOneDayPremiumSecondItem: "",
-      mdTwoDayPremium: "",
-      mdTwoDayPremiumSecondItem: "",
-    },
-    mainImage: "",
-    additionalImages: [],
+  const [name, setName] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [itemQty, setItemQty] = useState("");
+  const [productId, setProductId] = useState("");
+
+  // Price fields
+  const [price, setPrice] = useState({
+    basePrice: "",
+    oneDayPremium: "",
+    oneDayPremiumSecondItem: "",
+    twoDayPremium: "",
+    twoDayPremiumSecondItem: "",
   });
+
+  const [xlPrice, setXlPrice] = useState({
+    xlBasePrice: "",
+    xlOneDayPremium: "",
+    xlOneDayPremiumSecondItem: "",
+    xlTwoDayPremium: "",
+    xlTwoDayPremiumSecondItem: "",
+  });
+
+  const [mdPrice, setMdPrice] = useState({
+    mdBasePrice: "",
+    mdOneDayPremium: "",
+    mdOneDayPremiumSecondItem: "",
+    mdTwoDayPremium: "",
+    mdTwoDayPremiumSecondItem: "",
+  });
+
+  // Image fields
+  const [mainImage, setMainImage] = useState(null);
+  const [additionalImages, setAdditionalImages] = useState([]);
+
+  // Handlers for images
+  const handleMainImageChange = (e) => setMainImage(e.target.files[0]);
+  const handleAdditionalImagesChange = (e) => {
+    setAdditionalImages(e.target.files);
+  };
 
   const { data: products, isLoading: isProductsLoading } =
     useGetProductsQuery();
   const [addVariation, { isLoading: isVariantsLoading }] =
     useAddVariationMutation();
 
-  const handleInputChange = (e, priceType, key) => {
-    setVariationData({
-      ...variationData,
-      [priceType]: {
-        ...variationData[priceType],
-        [key]: e.target.value,
-      },
-    });
-  };
-
-  const handleImageChange = (e) => {
-    setVariationData({
-      ...variationData,
-      mainImage: e.target.files[0],
-    });
-  };
-
-  const handleAdditionalImagesChange = (e) => {
-    setVariationData({
-      ...variationData,
-      additionalImages: [...e.target.files],
-    });
+  const handlePriceChange = (e, size) => {
+    const { name, value } = e.target;
+    if (size === "price") {
+      setPrice((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    } else if (size === "xlPrice") {
+      setXlPrice((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    } else if (size === "mdPrice") {
+      setMdPrice((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleFormSubmit = async () => {
     try {
       const formData = new FormData();
-      formData.append("name", variationData.name);
-      formData.append("quantity", variationData.quantity);
-      formData.append("productId", variationData.productId);
-      formData.append("itemQty", variationData.itemQty);
-      formData.append("price", JSON.stringify(variationData.price));
-      formData.append("xlPrice", JSON.stringify(variationData.xlPrice));
-      formData.append("mdPrice", JSON.stringify(variationData.mdPrice));
+      formData.append("name", name);
+      formData.append("quantity", quantity);
+      formData.append("productId", productId);
+      formData.append("itemQty", itemQty);
+      formData.append("price", JSON.stringify(price));
+      formData.append("xlPrice", JSON.stringify(xlPrice));
+      formData.append("mdPrice", JSON.stringify(mdPrice));
 
       // Add images to formData
-      if (variationData.mainImage) {
-        formData.append("mainImage", variationData.mainImage);
+      if (mainImage) {
+        formData.append("mainImage", mainImage);
       }
-
-      variationData.additionalImages.forEach((image) => {
-        formData.append("additionalImages", image);
-      });
+      for (let i = 0; i < additionalImages.length; i++) {
+        formData.append("additionalImages", additionalImages[i]);
+      }
 
       await addVariation(formData).unwrap();
     } catch (error) {
@@ -134,35 +139,23 @@ function Variation({
                 fullWidth
                 margin="normal"
                 label="Variation Name"
-                value={variationData.name}
-                onChange={(e) =>
-                  setVariationData({ ...variationData, name: e.target.value })
-                }
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
               <TextField
                 fullWidth
                 margin="normal"
                 label="Quantity"
                 type="number"
-                value={variationData.quantity}
-                onChange={(e) =>
-                  setVariationData({
-                    ...variationData,
-                    quantity: e.target.value,
-                  })
-                }
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
               />
               <TextField
                 select
                 fullWidth
                 margin="normal"
-                value={variationData.productId}
-                onChange={(e) =>
-                  setVariationData({
-                    ...variationData,
-                    productId: e.target.value,
-                  })
-                }
+                value={productId}
+                onChange={(e) => setProductId(e.target.value)}
                 SelectProps={{
                   native: true,
                 }}
@@ -179,13 +172,8 @@ function Variation({
                 margin="normal"
                 label="Item pack include Qty"
                 type="number"
-                value={variationData.itemQty}
-                onChange={(e) =>
-                  setVariationData({
-                    ...variationData,
-                    itemQty: e.target.value,
-                  })
-                }
+                value={itemQty}
+                onChange={(e) => setItemQty(e.target.value)}
               />
             </Grid>
 
@@ -199,46 +187,49 @@ function Variation({
                 fullWidth
                 margin="normal"
                 label="Base Price"
+                name="basePrice"
                 type="number"
-                value={variationData.price.basePrice}
-                onChange={(e) => handleInputChange(e, "price", "basePrice")}
+                value={price.basePrice}
+                onChange={(e) => handlePriceChange(e, "price")}
               />
               <TextField
                 fullWidth
                 margin="normal"
-                label="One Day Premium"
+                label="oneDay pre-1st"
+                name="oneDayPremium"
+                value={price.oneDayPremium}
                 type="number"
-                value={variationData.price.oneDayPremium}
-                onChange={(e) => handleInputChange(e, "price", "oneDayPremium")}
+                onChange={(e) => handlePriceChange(e, "price")}
               />
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="oneDay pre-2nd"
+                  name="oneDayPremiumSecondItem"
+                  value={price.oneDayPremiumSecondItem}
+                  type="number"
+                  onChange={(e) => handlePriceChange(e, "price")}
+                />
+              </Grid>
               <TextField
                 fullWidth
                 margin="normal"
-                label="One Day Premium Second Item"
+                label="twoDayPre 1st"
+                value={price.twoDayPremium}
+                name="twoDayPremium"
                 type="number"
-                value={variationData.price.oneDayPremiumSecondItem}
-                onChange={(e) =>
-                  handleInputChange(e, "price", "oneDayPremiumSecondItem")
-                }
+                onChange={(e) => handlePriceChange(e, "price")}
               />
               <TextField
-                fullWidth
-                margin="normal"
-                label="Two Day Premium"
-                type="number"
-                value={variationData.price.twoDayPremium}
-                onChange={(e) => handleInputChange(e, "price", "twoDayPremium")}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Two Day Premium Second Item"
-                type="number"
-                value={variationData.price.twoDayPremiumSecondItem}
-                onChange={(e) =>
-                  handleInputChange(e, "price", "twoDayPremiumSecondItem")
-                }
-              />
+                    fullWidth
+                    margin="normal"
+                    label="XL-2DayPre-2nd"
+                    name="xlTwoDayPremiumSecondItem"
+                    type="number"
+                    value={xlPrice.xlTwoDayPremiumSecondItem}
+                    onChange={(e) => handlePriceChange(e, "xlPrice")}
+                  />
 
               {/* XL Price */}
               <Typography variant="subtitle2">XL Price</Typography>
@@ -246,49 +237,46 @@ function Variation({
                 fullWidth
                 margin="normal"
                 label="XL Base Price"
+                name="xlBasePrice"
                 type="number"
-                value={variationData.xlPrice.xlBasePrice}
-                onChange={(e) => handleInputChange(e, "xlPrice", "xlBasePrice")}
+                value={xlPrice.xlBasePrice}
+                onChange={(e) => handlePriceChange(e, "xlPrice")}
               />
               <TextField
                 fullWidth
                 margin="normal"
-                label="XL One Day Premium"
+                label="XL-1DayPre-1st"
+                name="xlOneDayPremium"
                 type="number"
-                value={variationData.xlPrice.xlOneDayPremium}
-                onChange={(e) =>
-                  handleInputChange(e, "xlPrice", "xlOneDayPremium")
-                }
+                value={xlPrice.xlOneDayPremium}
+                onChange={(e) => handlePriceChange(e, "xlPrice")}
               />
               <TextField
                 fullWidth
                 margin="normal"
-                label="XL One Day Premium Second Item"
+                label="XL-1DayPre-2nd"
+                name="xlOneDayPremiumSecondItem"
+                value={xlPrice.xlOneDayPremiumSecondItem}
                 type="number"
-                value={variationData.xlPrice.xlOneDayPremiumSecondItem}
-                onChange={(e) =>
-                  handleInputChange(e, "xlPrice", "xlOneDayPremiumSecondItem")
-                }
+                onChange={(e) => handlePriceChange(e, "xlPrice")}
               />
               <TextField
                 fullWidth
                 margin="normal"
-                label="XL Two Day Premium"
+                label="XL-2DayPre-1st"
+                name="xlTwoDayPremium"
                 type="number"
-                value={variationData.xlPrice.xlTwoDayPremium}
-                onChange={(e) =>
-                  handleInputChange(e, "xlPrice", "xlTwoDayPremium")
-                }
+                value={xlPrice.xlTwoDayPremium}
+                onChange={(e) => handlePriceChange(e, "xlPrice")}
               />
               <TextField
                 fullWidth
                 margin="normal"
-                label="XL Two Day Premium Second Item"
+                label="XL-2DayPre-2nd"
+                name="xlTwoDayPremiumSecondItem"
                 type="number"
-                value={variationData.xlPrice.xlTwoDayPremiumSecondItem}
-                onChange={(e) =>
-                  handleInputChange(e, "xlPrice", "xlTwoDayPremiumSecondItem")
-                }
+                value={xlPrice.xlTwoDayPremiumSecondItem}
+                onChange={(e) => handlePriceChange(e, "xlPrice")}
               />
 
               {/* MD Price */}
@@ -297,49 +285,46 @@ function Variation({
                 fullWidth
                 margin="normal"
                 label="MD Base Price"
+                name="mdBasePrice"
                 type="number"
-                value={variationData.mdPrice.mdBasePrice}
-                onChange={(e) => handleInputChange(e, "mdPrice", "mdBasePrice")}
+                value={mdPrice.mdBasePrice}
+                onChange={(e) => handlePriceChange(e, "mdPrice")}
               />
               <TextField
                 fullWidth
                 margin="normal"
-                label="MD One Day Premium"
+                label="MD-1DayPre-1st"
+                name="mdOneDayPremium"
                 type="number"
-                value={variationData.mdPrice.mdOneDayPremium}
-                onChange={(e) =>
-                  handleInputChange(e, "mdPrice", "mdOneDayPremium")
-                }
+                value={mdPrice.mdOneDayPremium}
+                onChange={(e) => handlePriceChange(e, "mdPrice")}
               />
               <TextField
                 fullWidth
                 margin="normal"
-                label="MD One Day Premium Second Item"
+                label="MD-1DayPre-2nd"
+                name="mdOneDayPremiumSecondItem"
                 type="number"
-                value={variationData.mdPrice.mdOneDayPremiumSecondItem}
-                onChange={(e) =>
-                  handleInputChange(e, "mdPrice", "mdOneDayPremiumSecondItem")
-                }
+                value={mdPrice.mdOneDayPremiumSecondItem}
+                onChange={(e) => handlePriceChange(e, "mdPrice")}
               />
               <TextField
                 fullWidth
                 margin="normal"
-                label="MD Two Day Premium"
+                label="MD-2DayPre-1st"
+                name="mdTwoDayPremium"
                 type="number"
-                value={variationData.mdPrice.mdTwoDayPremium}
-                onChange={(e) =>
-                  handleInputChange(e, "mdPrice", "mdTwoDayPremium")
-                }
+                value={mdPrice.mdTwoDayPremium}
+                onChange={(e) => handlePriceChange(e, "mdPrice")}
               />
               <TextField
                 fullWidth
                 margin="normal"
-                label="MD Two Day Premium Second Item"
+                label="MD-2DayPre-2nd"
+                name="mdTwoDayPremiumSecondItem"
                 type="number"
-                value={variationData.mdPrice.mdTwoDayPremiumSecondItem}
-                onChange={(e) =>
-                  handleInputChange(e, "mdPrice", "mdTwoDayPremiumSecondItem")
-                }
+                value={mdPrice.mdTwoDayPremiumSecondItem}
+                onChange={(e) => handlePriceChange(e, "mdPrice")}
               />
             </Grid>
 
@@ -348,7 +333,7 @@ function Variation({
               <input
                 type="file"
                 accept="image/*"
-                onChange={handleImageChange}
+                onChange={handleMainImageChange}
               />
 
               <Typography variant="subtitle1">Additional Images</Typography>
