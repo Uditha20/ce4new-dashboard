@@ -496,11 +496,11 @@ const AddProductForm = ({ open, handleClose }) => {
                   <MenuItem value="Reusable">Reusable</MenuItem>
                 </Select>
               </FormControl>
-              <InputLabel>Department</InputLabel>
+              <InputLabel>suitable for use</InputLabel>
               <Select
                 fullWidth
                 margin="normal"
-                label="Department"
+                label="suitable for use"
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
                 multiple // Allows multiple selections

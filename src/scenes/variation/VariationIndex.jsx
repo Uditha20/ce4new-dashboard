@@ -37,7 +37,7 @@ function VariationIndex() {
     };
   
     if (isLoading) return <Typography>Loading...</Typography>;
-  
+  console.log(data)
     return (
       <Box>
         <Header title="Variation" subtitle="See your list of products." />
@@ -55,7 +55,8 @@ function VariationIndex() {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Name</TableCell>
+                  <TableCell>variation Name</TableCell>
+                  <TableCell>Product Name</TableCell>
                   <TableCell>Quantity</TableCell>
                   <TableCell>Created At</TableCell>
                   <TableCell>Item Include Qty</TableCell>
@@ -75,6 +76,7 @@ function VariationIndex() {
                 {data.map((item) => (
                   <TableRow key={item._id}>
                     <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.productId.name}</TableCell>
                     <TableCell>{item.quantity || "N/A"}</TableCell>
                     <TableCell>{new Date(item.createdAt).toLocaleDateString()}</TableCell>
                     <TableCell>{item.itemQty || "N/A"}</TableCell>

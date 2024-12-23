@@ -113,7 +113,7 @@ const ProductRow = ({ product }) => {
               <Typography>SKU: {product.sku}</Typography>
               <Typography>Category: {product.category}</Typography>
               <Typography>color: {product.colour}</Typography>
-              <Typography>Department: {product.department}</Typography>
+            
               <Typography>Material: {product.material}</Typography>
               <Typography>Style: {product.style}</Typography>
               <Typography>Shape: {product.shape}</Typography>
@@ -143,7 +143,13 @@ const ProductRow = ({ product }) => {
                 Offer Ends: {new Date(product.offerEnd).toLocaleDateString()}
               </Typography>
             </Grid>
-
+            <Grid item xs={12} md={6}>
+              <Typography variant="h6">Multiple selections</Typography>
+              <Typography>sutable for use: {product.department}</Typography>
+              <Typography>Features: {product.features}</Typography>
+            
+              <Typography>Occasion: {product.occasion}</Typography>
+            </Grid>
             <Grid item xs={12} md={6}>
               <Typography variant="h6">Dimensions & Weight</Typography>
               <Typography>Width: {product.dimensions && product.dimensions.dwidth}</Typography>

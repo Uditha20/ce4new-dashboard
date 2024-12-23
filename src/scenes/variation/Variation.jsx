@@ -22,6 +22,7 @@ function Variation({
   const [quantity, setQuantity] = useState("");
   const [itemQty, setItemQty] = useState("");
   const [productId, setProductId] = useState("");
+  const [variationId, setVariationId] = useState("");
 
   // Price fields
   const [price, setPrice] = useState({
@@ -94,6 +95,7 @@ function Variation({
       formData.append("price", JSON.stringify(price));
       formData.append("xlPrice", JSON.stringify(xlPrice));
       formData.append("mdPrice", JSON.stringify(mdPrice));
+      formData.append("variationId", variationId);
 
       // Add images to formData
       if (mainImage) {
@@ -147,6 +149,14 @@ function Variation({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Variation Id"
+                value={variationId}
+                onChange={(e) => setVariationId(e.target.value)}
+              />
+
               <TextField
                 fullWidth
                 margin="normal"
