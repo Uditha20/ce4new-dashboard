@@ -9,15 +9,22 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Paper,
   Modal, // Import Modal
 } from "@mui/material";
 import Header from "components/Header";
 import VariationFrom from "./Variation";
-import { useGetVariationQuery } from "../../state/api";
+import { useGetVariationQuery,useGetProductsQuery } from "../../state/api";
 function VariationIndex() {
+  const [productId, setProductId] = useState("");
     const [isAddProductOpen, setIsAddProductOpen] = useState(false);
     const { data, isLoading } = useGetVariationQuery();
+    const { data: products, isLoading: isProductsLoading } =
+    useGetProductsQuery();
+    const filteredVariations = Array.isArray(data)
+    ? data.filter((item) => item.productId?._id === productId)
+    : [];
     const baseUrl = process.env.REACT_APP_BASE_URL;
     const handleOpenAddProduct = () => setIsAddProductOpen(true);
     const handleCloseAddProduct = () => setIsAddProductOpen(false);
@@ -38,6 +45,7 @@ function VariationIndex() {
   
     if (isLoading) return <Typography>Loading...</Typography>;
   console.log(data)
+
     return (
       <Box>
         <Header title="Variation" subtitle="See your list of products." />
@@ -50,7 +58,24 @@ function VariationIndex() {
         />
         <Box sx={{ p: 2 }}>
           <Typography variant="h5">Variation</Typography>
-  
+          
+          <TextField xs={12} sm={6} md={4} lg={3} xl={2}
+                select
+                fullWidth
+                margin="normal"
+                value={productId}
+                onChange={(e) => setProductId(e.target.value)}
+                SelectProps={{
+                  native: true,
+                }}
+              >
+                <option value="">Select Product</option>
+                {products?.map((product) => (
+                  <option key={product._id} value={product._id}>
+                    {product.name}
+                  </option>
+                ))}
+              </TextField>
           <TableContainer component={Paper} sx={{ mt: 3 }}>
             <Table>
               <TableHead>
@@ -73,7 +98,7 @@ function VariationIndex() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data.map((item) => (
+                {filteredVariations.map((item) => (
                   <TableRow key={item._id}>
                     <TableCell>{item.name}</TableCell>
                     <TableCell>{item.productId.name}</TableCell>
