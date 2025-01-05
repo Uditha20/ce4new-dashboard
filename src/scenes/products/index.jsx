@@ -20,7 +20,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import Header from "components/Header";
 import AddProductForm from "./AddProductForm";
-import { useGetProductsQuery } from "state/api";
+import { useGetProductsQuery, useUpdateOneProductMutation,useDeleteOneProductMutation } from "state/api";
 import EditProduct from "./EditProduct";
 
 const ProductRow = ({ product }) => {
@@ -32,7 +32,8 @@ const ProductRow = ({ product }) => {
 
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [currentProductId, setCurrentProductId] = useState(null);
-
+  const [updateOneProduct] = useUpdateOneProductMutation();
+  const [deleteOneProduct] = useDeleteOneProductMutation();
   const showEditModal = (id) => {
     setCurrentProductId(id);
     setIsEditModalVisible(true);
@@ -42,6 +43,23 @@ const ProductRow = ({ product }) => {
     setIsEditModalVisible(false);
     setCurrentProductId(null);
   };
+
+  const activeChange =async (id) => {
+    try {
+     await updateOneProduct(id).unwrap();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const activeDelete = async (id) => {  
+    try {
+      await deleteOneProduct(id).unwrap();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
 
   return (
     <>
@@ -69,6 +87,27 @@ const ProductRow = ({ product }) => {
             Edit
           </Button>
         </TableCell>
+        <TableCell>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => activeChange(product._id)}
+            sx={{
+              backgroundColor: product.isActive ? "green" : "yellow",
+              color: product.isActive ? "white" : "black",
+              "&:hover": {
+                backgroundColor: product.isActive ? "darkgreen" : "gold",
+              },
+            }}
+          >
+            Active
+          </Button>
+        </TableCell>
+        <TableCell>
+          <Button variant="contained" size="small" onClick={()=>activeDelete(product._id)}>
+            Delete
+          </Button>
+        </TableCell>
       </TableRow>
       <Modal open={isEditModalVisible} onClose={hideEditModal}>
         <Box
@@ -81,7 +120,6 @@ const ProductRow = ({ product }) => {
             borderRadius: 2,
             maxHeight: "100vh",
             overflow: "auto",
-            
           }}
         >
           <EditProduct id={currentProductId} />
@@ -113,7 +151,7 @@ const ProductRow = ({ product }) => {
               <Typography>SKU: {product.sku}</Typography>
               <Typography>Category: {product.category}</Typography>
               <Typography>color: {product.colour}</Typography>
-            
+
               <Typography>Material: {product.material}</Typography>
               <Typography>Style: {product.style}</Typography>
               <Typography>Shape: {product.shape}</Typography>
@@ -147,14 +185,20 @@ const ProductRow = ({ product }) => {
               <Typography variant="h6">Multiple selections</Typography>
               <Typography>sutable for use: {product.department}</Typography>
               <Typography>Features: {product.features}</Typography>
-            
+
               <Typography>Occasion: {product.occasion}</Typography>
             </Grid>
             <Grid item xs={12} md={6}>
               <Typography variant="h6">Dimensions & Weight</Typography>
-              <Typography>Width: {product.dimensions && product.dimensions.dwidth}</Typography>
-              <Typography>Height: {product.dimensions &&  product.dimensions.dheight}</Typography>
-              <Typography>Length: {product.dimensions &&  product.dimensions.dlength}</Typography>
+              <Typography>
+                Width: {product.dimensions && product.dimensions.dwidth}
+              </Typography>
+              <Typography>
+                Height: {product.dimensions && product.dimensions.dheight}
+              </Typography>
+              <Typography>
+                Length: {product.dimensions && product.dimensions.dlength}
+              </Typography>
               <Typography>Weight: {product.weight}</Typography>
               <Typography>
                 Capacity: {product.capacity} {product.capacityMeasure}
@@ -290,6 +334,8 @@ const Products = () => {
                 <TableCell>Stock</TableCell>
                 <TableCell>Actions</TableCell>
                 <TableCell>Edit</TableCell>
+                <TableCell>Active</TableCell>
+                <TableCell>Delete</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

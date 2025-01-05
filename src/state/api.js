@@ -130,6 +130,20 @@ export const api = createApi({
       query: () => "productVariation/getVariations",
       providesTags: ["variation"],
     }),
+    updateOneProduct: build.mutation({
+      query: (id) => ({
+        url: `client/updateOneProduct/${id}`, // Backend endpoint
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Products"], // Invalidate cache to trigger refetch
+    }),
+    deleteOneProduct: build.mutation({
+      query: (id) => ({
+        url: `client/deleteOneProduct/${id}`, // Backend endpoint
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Products"], // Invalidate cache to trigger refetch
+    }),
   }),
 });
 
@@ -154,4 +168,6 @@ export const {
   useAddVariationMutation,
   useUpdateProductMutation,
   useUpdateCategoryMutation,
+  useUpdateOneProductMutation,
+  useDeleteOneProductMutation,
 } = api;
