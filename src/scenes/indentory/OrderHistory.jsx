@@ -57,6 +57,9 @@ function OrderHistory() {
               <TableCell>Overall Total</TableCell>
               <TableCell>Billing Info</TableCell>
               <TableCell>Items</TableCell>
+              <TableCell>Order Date</TableCell>
+              <TableCell>Order status</TableCell>
+              <TableCell>change status</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -82,6 +85,62 @@ function OrderHistory() {
                   >
                     View Items
                   </Button>
+                </TableCell>
+                <TableCell>
+                  <span
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                      color: "#ffffff",
+                    }}
+                  >
+                    {new Date(order.createdAt).toLocaleDateString("en-US", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      padding: "5px 10px",
+                      borderRadius: "5px",
+                      color: "white",
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      backgroundColor:
+                        order.status === "confirmed"
+                          ? "green"
+                          : order.status === "process"
+                          ? "orange"
+                          : order.status === "deliver"
+                          ? "blue"
+                          : "gray", // Default color for unknown statuses
+                    }}
+                  >
+                    {order.status}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <select
+                    value={order.status}
+                    // onChange={(e) =>
+                    //   handleStatusChange(order._id, e.target.value)
+                    // }
+                    style={{
+                      padding: "5px",
+                      borderRadius: "5px",
+                      border: "1px solid #ccc",
+                      fontSize: "14px",
+                      color: "#333",
+                    }}
+                  >
+                    <option value="process">Confirmed</option>
+                    <option value="process">Process</option>
+                    <option value="deliver">Deliver</option>
+                  </select>
                 </TableCell>
               </TableRow>
             ))}
@@ -177,14 +236,19 @@ function OrderHistory() {
                     <TableRow key={item.product._id}>
                       <TableCell>{item.product.name}</TableCell>
                       <TableCell>{item.quantity}</TableCell>
-                      <TableCell>${item.product.price.basePrice.toFixed(2)}</TableCell>
+                      <TableCell>
+                        ${item.product.price.basePrice.toFixed(2)}
+                      </TableCell>
                       <TableCell>
                         {item.product.discount
                           ? `${item.product.discount}%`
                           : "No Discount"}
                       </TableCell>
                       <TableCell>
-                        ${(item.quantity * item.product.price.basePrice).toFixed(2)}
+                        $
+                        {(item.quantity * item.product.price.basePrice).toFixed(
+                          2
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
