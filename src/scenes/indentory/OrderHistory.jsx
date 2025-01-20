@@ -14,10 +14,12 @@ import {
   TableRow,
   Paper,
   useTheme,
+  TextField,
 } from "@mui/material";
 function OrderHistory() {
   const theme = useTheme();
   const { data, isLoading, error } = useGetOrderHistoryQuery();
+  const [status, setStatus] = useState("");
   const [openBillDialog, setOpenBillDialog] = useState(false);
   const [openItemsDialog, setOpenItemsDialog] = useState(false);
   const [selectedBillInfo, setSelectedBillInfo] = useState(null);
@@ -25,7 +27,9 @@ function OrderHistory() {
   console.log(data);
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading order history</div>;
-
+  const handleSelectChange = (e) => {
+    setStatus(e.target.value);
+  };
   const handleOpenBillInfo = (billInfo) => {
     setSelectedBillInfo(billInfo);
     setOpenBillDialog(true);
@@ -60,6 +64,8 @@ function OrderHistory() {
               <TableCell>Order Date</TableCell>
               <TableCell>Order status</TableCell>
               <TableCell>change status</TableCell>
+              <TableCell>Track ID</TableCell>
+              <TableCell>Delivery Company</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -125,6 +131,32 @@ function OrderHistory() {
                 </TableCell>
                 <TableCell>
                   <select
+                    value={status}
+                    onChange={handleSelectChange}
+                    name="status"
+                    style={{
+                      padding: "5px",
+                      borderRadius: "5px",
+                      border: "1px solid #ccc",
+                      fontSize: "14px",
+                      color: "#333",
+                    }}
+                  >
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="Process">Process</option>
+                    <option value="Deliver">Deliver</option>
+                  </select>
+                </TableCell>
+                <TableCell>
+                  <TextField
+                    label="Enter ID"
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                  />
+                </TableCell>
+                <TableCell>
+                  <select
                     value={order.status}
                     // onChange={(e) =>
                     //   handleStatusChange(order._id, e.target.value)
@@ -137,9 +169,9 @@ function OrderHistory() {
                       color: "#333",
                     }}
                   >
-                    <option value="process">Confirmed</option>
-                    <option value="process">Process</option>
-                    <option value="deliver">Deliver</option>
+                    <option value="RoyalMail">Royal Mail</option>
+                    <option value="Parcel2go">Parcel2go</option>
+                    <option value="evri">Evri</option>
                   </select>
                 </TableCell>
               </TableRow>
