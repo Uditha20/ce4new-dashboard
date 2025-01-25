@@ -73,6 +73,15 @@ export const api = createApi({
       invalidatesTags: ["Products"],
     }),
 
+    addTrackDetails:build.mutation({
+      query: (newTrackDetails) => ({
+        url: "order/trackDetails",
+        method: "POST",
+        body: newTrackDetails,
+      }),
+      invalidatesTags: ["OrderHistory"],
+    }),
+
     updateProduct: build.mutation({
       query: ({ id, formData }) => ({
         url: `client/products/${id}`, // Endpoint for updating the product
@@ -170,4 +179,5 @@ export const {
   useUpdateCategoryMutation,
   useUpdateOneProductMutation,
   useDeleteOneProductMutation,
+  useAddTrackDetailsMutation
 } = api;

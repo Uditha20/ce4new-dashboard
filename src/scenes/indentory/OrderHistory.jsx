@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useGetOrderHistoryQuery } from "state/api";
 import {
   Box,
@@ -16,20 +16,54 @@ import {
   useTheme,
   TextField,
 } from "@mui/material";
+import { useAddTrackDetailsMutation } from "state/api";
+
 function OrderHistory() {
   const theme = useTheme();
   const { data, isLoading, error } = useGetOrderHistoryQuery();
-  const [status, setStatus] = useState("");
+  const [
+    addTrackDetails,
+    {
+      isLoading: isLoadingTrack,
+      isSuccess,
+      isError: isTrackError,
+      error: trackError,
+    },
+  ] = useAddTrackDetailsMutation();
   const [openBillDialog, setOpenBillDialog] = useState(false);
   const [openItemsDialog, setOpenItemsDialog] = useState(false);
   const [selectedBillInfo, setSelectedBillInfo] = useState(null);
   const [selectedItems, setSelectedItems] = useState(null);
-  console.log(data);
+  const [trackId, setTrackId] = useState(null);
+  const [selectedMethod, setSelectedMethod] = useState(""); // Default value
+  const [selectedOrder, setSelectedOrder] = useState({
+    id: null,
+    status: "Confirmed",
+  });
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      setSelectedOrder({
+        id: data[0]._id,
+        status: data[0].status || "Confirmed",
+      });
+    }
+  }, [data]);
+
+  // Handle select change for a specific order
+  const handleSelectChange = (orderId, event) => {
+    const newStatus = event.target.value;
+    setSelectedOrder({ id: orderId, status: newStatus });
+  };
+  const handleSelectChangeMethod = (event) => {
+    setSelectedMethod(event.target.value); // Update the selected method
+  };
+  console.log(selectedOrder);
+  console.log(trackId);
+  console.log(selectedMethod);
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading order history</div>;
-  const handleSelectChange = (e) => {
-    setStatus(e.target.value);
-  };
+
   const handleOpenBillInfo = (billInfo) => {
     setSelectedBillInfo(billInfo);
     setOpenBillDialog(true);
@@ -50,6 +84,24 @@ function OrderHistory() {
     setSelectedItems(null);
   };
 
+  const handleAddTracking = async () => {
+    const newTrackDetails = {
+      trackId,
+      shippingMethod: selectedMethod,
+      orderId: selectedOrder.id,
+      orderStatus: selectedOrder.status,
+    };
+
+    try {
+      await addTrackDetails(newTrackDetails).unwrap();
+      // Handle success (e.g., show a success message)
+      console.log("Tracking details added successfully");
+    } catch (error) {
+      // Handle error (e.g., show an error message)
+      console.error("Failed to add tracking details:", error);
+    }
+  };
+
   return (
     <Box m="1.5rem 2.5rem">
       <TableContainer component={Paper} style={{ backgroundColor: "#21295c" }}>
@@ -66,6 +118,7 @@ function OrderHistory() {
               <TableCell>change status</TableCell>
               <TableCell>Track ID</TableCell>
               <TableCell>Delivery Company</TableCell>
+              <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -131,8 +184,12 @@ function OrderHistory() {
                 </TableCell>
                 <TableCell>
                   <select
-                    value={status}
-                    onChange={handleSelectChange}
+                    value={
+                      selectedOrder.id === order._id
+                        ? selectedOrder.status
+                        : "Confirmed"
+                    } // Show current status if selected
+                    onChange={(event) => handleSelectChange(order._id, event)}
                     name="status"
                     style={{
                       padding: "5px",
@@ -153,14 +210,13 @@ function OrderHistory() {
                     variant="outlined"
                     size="small"
                     fullWidth
+                    onBlur={(e) => setTrackId(e.target.value)}
                   />
                 </TableCell>
                 <TableCell>
                   <select
-                    value={order.status}
-                    // onChange={(e) =>
-                    //   handleStatusChange(order._id, e.target.value)
-                    // }
+                    value={selectedMethod} // Bind the state to the select value
+                    onChange={handleSelectChangeMethod} // Handle change event
                     style={{
                       padding: "5px",
                       borderRadius: "5px",
@@ -173,6 +229,17 @@ function OrderHistory() {
                     <option value="Parcel2go">Parcel2go</option>
                     <option value="evri">Evri</option>
                   </select>
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleAddTracking} // Call the mutation
+                    disabled={isLoadingTrack} // Disable the button if the mutation is loading
+                  >
+                    {isLoadingTrack ? "Submitting..." : "Submit"}{" "}
+                    {/* Change button text based on loading state */}
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
