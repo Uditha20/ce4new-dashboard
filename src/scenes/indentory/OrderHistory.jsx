@@ -126,7 +126,7 @@ function OrderHistory() {
               <TableRow key={order._id}>
                 <TableCell>{order._id}</TableCell>
 
-                <TableCell>${Number(order.overallTotal).toFixed(2)}</TableCell>
+                <TableCell>{Number(order.overallTotal).toFixed(2)}</TableCell>
                 <TableCell>
                   <Button
                     variant="contained"
@@ -172,9 +172,9 @@ function OrderHistory() {
                       backgroundColor:
                         order.status === "confirmed"
                           ? "green"
-                          : order.status === "process"
+                          : order.status === "processing"
                           ? "orange"
-                          : order.status === "deliver"
+                          : order.status === "Delivered"
                           ? "blue"
                           : "gray", // Default color for unknown statuses
                     }}
@@ -200,8 +200,8 @@ function OrderHistory() {
                     }}
                   >
                     <option value="Confirmed">Confirmed</option>
-                    <option value="Process">Process</option>
-                    <option value="Deliver">Deliver</option>
+                    <option value="processing">processing</option>
+                    <option value="Delivered">Delivered</option>
                   </select>
                 </TableCell>
                 <TableCell>

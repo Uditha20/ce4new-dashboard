@@ -22,6 +22,7 @@ import Header from "components/Header";
 import AddProductForm from "./AddProductForm";
 import { useGetProductsQuery, useUpdateOneProductMutation,useDeleteOneProductMutation } from "state/api";
 import EditProduct from "./EditProduct";
+import ConfirmDialog from "scenes/admin/ConfirmDialog";
 
 const ProductRow = ({ product }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,6 +35,7 @@ const ProductRow = ({ product }) => {
   const [currentProductId, setCurrentProductId] = useState(null);
   const [updateOneProduct] = useUpdateOneProductMutation();
   const [deleteOneProduct] = useDeleteOneProductMutation();
+  const [openDialog, setOpenDialog] = useState(false);
   const showEditModal = (id) => {
     setCurrentProductId(id);
     setIsEditModalVisible(true);
@@ -50,6 +52,18 @@ const ProductRow = ({ product }) => {
     } catch (error) {
       console.error(error);
     }
+  };
+  const handleDeleteClick = () => {
+    setOpenDialog(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    await activeDelete(product._id); // Call your delete function here
+    setOpenDialog(false);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
   };
 
   const activeDelete = async (id) => {  
@@ -104,10 +118,16 @@ const ProductRow = ({ product }) => {
           </Button>
         </TableCell>
         <TableCell>
-          <Button variant="contained" size="small" onClick={()=>activeDelete(product._id)}>
-            Delete
-          </Button>
-        </TableCell>
+        <Button variant="contained" size="small" onClick={handleDeleteClick}>
+          Delete
+        </Button>
+      </TableCell>
+      <ConfirmDialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        onConfirm={handleConfirmDelete}
+        message="Are you sure you want to delete this item?"
+      />
       </TableRow>
       <Modal open={isEditModalVisible} onClose={hideEditModal}>
         <Box

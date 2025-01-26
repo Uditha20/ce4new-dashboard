@@ -65,14 +65,14 @@ const navItems = [
     text: "Category",
     icon: <CategoryIcon />,
   },
-  {
-    text: "Customers",
-    icon: <PersonIcon />,
-  },
-  {
-    text: "inventory",
-    icon: <InventoryIcon />,
-  },
+  // {
+  //   text: "Customers",
+  //   icon: <PersonIcon />,
+  // },
+  // {
+  //   text: "inventory",
+  //   icon: <InventoryIcon />,
+  // },
   {
     text: "orderHistory",
     icon: <WorkHistoryIcon />,
