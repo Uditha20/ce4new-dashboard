@@ -114,7 +114,7 @@ const ProductRow = ({ product }) => {
               },
             }}
           >
-            Active
+              {product.isActive ? "Active" : "Inactive"}
           </Button>
         </TableCell>
         <TableCell>
