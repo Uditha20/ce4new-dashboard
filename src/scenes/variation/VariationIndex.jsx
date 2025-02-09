@@ -15,13 +15,22 @@ import {
 } from "@mui/material";
 import Header from "components/Header";
 import VariationFrom from "./Variation";
-import { useGetVariationQuery, useGetProductsQuery } from "../../state/api";
+import {
+  useGetVariationQuery,
+  useGetProductsQuery,
+  useEditVariationMutation,
+  useUpdateOneVariationMutation,
+  useUpdateIsActiveMutation,
+} from "../../state/api";
 function VariationIndex() {
   const [productId, setProductId] = useState("");
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
   const { data, isLoading } = useGetVariationQuery();
   const { data: products, isLoading: isProductsLoading } =
     useGetProductsQuery();
+  const [updateProduct, { isLoading: isUpdating }] = useEditVariationMutation();
+  const [updateOneProduct] = useUpdateOneVariationMutation();
+
   const filteredVariations = Array.isArray(data)
     ? data.filter((item) => item.productId?._id === productId)
     : [];
@@ -31,9 +40,11 @@ function VariationIndex() {
   const [selectedVariation, setSelectedVariation] = useState(null);
   const handleCloseAddProduct = () => setIsAddProductOpen(false);
   const [imagePreview, setImagePreview] = useState(null);
+  const [updateProductIsActive] = useUpdateIsActiveMutation();
 
   // State to control image modal
   const [openImageModal, setOpenImageModal] = useState(false);
+  const [variationId, setVariationId] = useState();
   const [selectedImages, setSelectedImages] = useState([]);
 
   const handleOpenImageModal = (mainImage, additionalImages) => {
@@ -47,6 +58,8 @@ function VariationIndex() {
   };
   const handleOpenEditProduct = (variation) => {
     setSelectedVariation(variation);
+    setVariationId(variation._id);
+
     setIsEditProductOpen(true);
   };
 
@@ -54,35 +67,66 @@ function VariationIndex() {
     setIsEditProductOpen(false);
     setSelectedVariation(null);
   };
+
+  const handleDelete = async (variation) => {
+    try {
+      await updateOneProduct(variation._id).unwrap();
+
+      alert("Variation deleted successfully!");
+    } catch (error) {
+      console.error("Failed to delete variation:", error);
+      alert("Failed to delete variation. Please try again.");
+    }
+  };
+
+  const handleIsActive = async (variation) => {
+    try {
+      await updateProductIsActive(variation._id).unwrap();
+      alert("Variation is active now!");
+    } catch (error) {
+      console.error("Failed to active variation:", error);
+      alert("Failed to active variation. Please try again.");
+    }
+  };
+
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result); // Set the preview URL
-        setSelectedVariation({ ...selectedVariation, mainImage: file.name }); // Store the file in selectedVariation
+        setImagePreview(reader.result); // Set preview URL
+        setSelectedVariation((prev) => ({
+          ...prev,
+          mainImage: file, // Store the actual file
+        }));
       };
-      reader.readAsDataURL(file); // Read the file as a data URL
+      reader.readAsDataURL(file);
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const formData = new FormData();
-    
+
     // Append text fields
     formData.append("name", selectedVariation?.name || "");
     formData.append("quantity", selectedVariation?.quantity || "");
     formData.append("price", JSON.stringify(selectedVariation.price));
     formData.append("itemQty", selectedVariation?.itemQty || "");
-    if (selectedImages) {
-      formData.append("mainImage", selectedImages);
+    if (selectedVariation?.mainImage) {
+      formData.append("mainImage", selectedVariation.mainImage);
     }
-  
-    // Append image if available
 
-  
-  
+    // console.log(variationId)
+    // Append image if available
+    try {
+      await updateProduct({ id: variationId, formData }).unwrap();
+      alert("Variation added successfully!");
+    } catch (error) {
+      console.error("Failed to update product:", error);
+      alert("Failed to update product. Please try again.");
+    }
   };
   if (isLoading) return <Typography>Loading...</Typography>;
 
@@ -141,6 +185,8 @@ function VariationIndex() {
                   <TableCell>Two Day Premium (MD)</TableCell> */}
                 <TableCell>View Image</TableCell>
                 <TableCell>Edit</TableCell>
+                <TableCell>Delete</TableCell>
+                <TableCell>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -186,6 +232,29 @@ function VariationIndex() {
                       onClick={() => handleOpenEditProduct(item)}
                     >
                       Edit
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="outlined"
+                      onClick={() => {
+                        const confirmDelete = window.confirm(
+                          "Are you sure you want to delete this?"
+                        );
+                        if (confirmDelete) {
+                          handleDelete(item);
+                        }
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="outlined"
+                      onClick={() => handleIsActive(item)}
+                    >
+                      {item.isActive ? "Deactivate" : "Activate"}
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -300,19 +369,24 @@ function VariationIndex() {
                 }
               />
               <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              style={{ margin: '10px 0' }}
-            />
-            {/* Display Main Image Preview */}
-            {imagePreview && (
-              <img
-                src={imagePreview}
-                alt="Main Variation Preview"
-                style={{ width: '80px', height: '80px', objectFit: 'cover', marginTop: '10px' }}
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                style={{ margin: "10px 0" }}
               />
-            )}
+              {/* Display Main Image Preview */}
+              {selectedVariation?.mainImage?.preview && (
+                <img
+                  src={selectedVariation.mainImage.preview}
+                  alt="Main Variation Preview"
+                  style={{
+                    width: "80px",
+                    height: "80px",
+                    objectFit: "cover",
+                    marginTop: "10px",
+                  }}
+                />
+              )}
               {/* Add more fields as necessary */}
               <Button type="submit" variant="contained" color="primary">
                 Save Changes

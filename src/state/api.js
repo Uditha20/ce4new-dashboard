@@ -25,7 +25,7 @@ export const api = createApi({
       providesTags: ["User"],
     }),
     getProducts: build.query({
-      query: () => "client/products",
+      query: () => "client/dashboardProducts",
       providesTags: ["Products"],
     }),
     getCustomers: build.query({
@@ -99,6 +99,15 @@ export const api = createApi({
       invalidatesTags: ["variation"],
     }),
 
+    editVariation: build.mutation({
+      query: ({id,formData}) => ({
+        url: `productVariation/editVariation/${id}`,
+        method: "PUT",
+        body: formData,
+      }),
+      invalidatesTags: ["variation"], 
+    }),
+
     addDeliveryCost: build.mutation({
       query: (newCost) => ({
         url: "sales/addCost",
@@ -136,7 +145,7 @@ export const api = createApi({
       providesTags: ["catrgory"],
     }),
     getVariation: build.query({
-      query: () => "productVariation/getVariations",
+      query: () => "productVariation/getVariationsForDashobard",
       providesTags: ["variation"],
     }),
     updateOneProduct: build.mutation({
@@ -153,6 +162,22 @@ export const api = createApi({
       }),
       invalidatesTags: ["Products"], // Invalidate cache to trigger refetch
     }),
+
+    updateOneVariation: build.mutation({
+      query: (id) => ({
+        url: `productVariation/updateOneVariation/${id}`, // Backend endpoint
+        method: "PATCH",
+      }),
+      invalidatesTags: ["variation"], // Invalidate cache to trigger refetch
+    }),
+    updateIsActive: build.mutation({
+      query: (id) => ({
+        url: `productVariation/updateIsActive/${id}`, // Backend endpoint
+        method: "PATCH",
+      }),
+      invalidatesTags: ["variation"], // Invalidate cache to trigger refetch
+    }),
+
   }),
 });
 
@@ -179,5 +204,8 @@ export const {
   useUpdateCategoryMutation,
   useUpdateOneProductMutation,
   useDeleteOneProductMutation,
-  useAddTrackDetailsMutation
+  useAddTrackDetailsMutation,
+  useEditVariationMutation,
+  useUpdateOneVariationMutation,
+  useUpdateIsActiveMutation,
 } = api;

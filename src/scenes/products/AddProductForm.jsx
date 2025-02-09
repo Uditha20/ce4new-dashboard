@@ -79,6 +79,15 @@ const AddProductForm = ({ open, handleClose }) => {
     width: "",
     height: "",
     length: "",
+    weight: "",
+  });
+
+  const [itemRelatedPartsTwo, setItemRelatedPartsTwo] = useState({
+    partName: "",
+    width: "",
+    height: "",
+    length: "",
+    weight: "",
   });
 
   const [dimensions, setDimensions] = useState({
@@ -161,6 +170,7 @@ const AddProductForm = ({ open, handleClose }) => {
     formData.append("xlPrice", JSON.stringify(xlPrice));
     formData.append("mdPrice", JSON.stringify(mdPrice));
     formData.append("itemRelatedParts", JSON.stringify(itemRelatedParts));
+    formData.append("itemRelatedPartsTwo", JSON.stringify(itemRelatedPartsTwo));
     formData.append("dimensions", JSON.stringify(dimensions));
 
     if (mainImage) {
@@ -318,6 +328,18 @@ const AddProductForm = ({ open, handleClose }) => {
                 onChange={(e) =>
                   setItemRelatedParts({
                     ...itemRelatedParts,
+                    partName: e.target.value,
+                  })
+                }
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Additional Part two Name"
+                value={itemRelatedPartsTwo.partName}
+                onChange={(e) =>
+                  setItemRelatedPartsTwo({
+                    ...itemRelatedPartsTwo,
                     partName: e.target.value,
                   })
                 }
@@ -530,6 +552,20 @@ const AddProductForm = ({ open, handleClose }) => {
                       })
                     }
                   />
+
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    type="number"
+                    label="Height"
+                    value={itemRelatedPartsTwo.height}
+                    onChange={(e) =>
+                      setItemRelatedPartsTwo({
+                        ...itemRelatedPartsTwo,
+                        height: e.target.value,
+                      })
+                    }
+                  />
                 </Grid>
                 <Grid item xs={4}>
                   <TextField
@@ -545,6 +581,20 @@ const AddProductForm = ({ open, handleClose }) => {
                       })
                     }
                   />
+
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    type="number"
+                    label="Width"
+                    value={itemRelatedPartsTwo.width}
+                    onChange={(e) =>
+                      setItemRelatedPartsTwo({
+                        ...itemRelatedPartsTwo,
+                        width: e.target.value,
+                      })
+                    }
+                  />
                 </Grid>
                 <Grid item xs={4}>
                   <TextField
@@ -556,6 +606,20 @@ const AddProductForm = ({ open, handleClose }) => {
                     onChange={(e) =>
                       setItemRelatedParts({
                         ...itemRelatedParts,
+                        length: e.target.value,
+                      })
+                    }
+                  />
+
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    type="number"
+                    label="Length"
+                    value={itemRelatedPartsTwo.length}
+                    onChange={(e) =>
+                      setItemRelatedPartsTwo({
+                        ...itemRelatedPartsTwo,
                         length: e.target.value,
                       })
                     }
@@ -711,6 +775,33 @@ const AddProductForm = ({ open, handleClose }) => {
                 value={style}
                 onChange={(e) => setStyle(e.target.value)}
               />
+
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Additional Part weight"
+                type="number"
+                value={itemRelatedParts.weight}
+                onChange={(e) =>
+                  setItemRelatedParts({
+                    ...itemRelatedParts,
+                    weight: e.target.value,
+                  })
+                }
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Additional Part Two weight"
+                type="number"
+                value={itemRelatedPartsTwo.weight}
+                onChange={(e) =>
+                  setItemRelatedPartsTwo({
+                    ...itemRelatedPartsTwo,
+                    weight: e.target.value,
+                  })
+                }
+              />
             </Grid>
 
             {/* Right Side */}
@@ -813,7 +904,6 @@ const AddProductForm = ({ open, handleClose }) => {
                   label="Category"
                   onChange={handleCategoryChange}
                   fullWidth
-
                 >
                   {categories.map((category) => (
                     <MenuItem key={category._id} value={category.name}>
@@ -837,8 +927,8 @@ const AddProductForm = ({ open, handleClose }) => {
                 label="Occasion"
                 value={occasion}
                 onChange={(e) => setOccasion(e.target.value)}
-                multiple 
-                renderValue={(selected) => selected.join(", ")} 
+                multiple
+                renderValue={(selected) => selected.join(", ")}
               >
                 <MenuItem value="All occasions">All occasions</MenuItem>
                 <MenuItem value="Housewarming">Housewarming</MenuItem>
