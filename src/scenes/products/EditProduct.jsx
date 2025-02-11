@@ -68,6 +68,12 @@ const EditProduct = ({ id }) => {
     partWidth: "",
     partHeight: "",
     partLength: "",
+    partWeight: "",
+    partNameTwo: "",
+    partWidthTwo: "",
+    partHeightTwo: "",
+    partLengthTwo: "",
+    partWeightTwo: "",
   });
   const [alertOpen, setAlertOpen] = useState(false); // For Snackbar
   const [previewImage, setPreviewImage] = useState(null);
@@ -121,6 +127,12 @@ const EditProduct = ({ id }) => {
         partWidth: productDetails.itemRelatedParts?.width || "",
         partHeight: productDetails.itemRelatedParts?.height || "",
         partLength: productDetails.itemRelatedParts?.length || "",
+        partWeight: productDetails.itemRelatedParts?.weight || "",
+        partNameTwo: productDetails.itemRelatedPartsTwo?.partName || "",
+        partWidthTwo: productDetails.itemRelatedPartsTwo?.width || "",
+        partHeightTwo: productDetails.itemRelatedPartsTwo?.height || "",
+        partLengthTwo: productDetails.itemRelatedPartsTwo?.length || "",
+        partWeightTwo: productDetails.itemRelatedPartsTwo?.weight || "",
       });
     }
   }, [productDetails]);
@@ -184,6 +196,12 @@ const EditProduct = ({ id }) => {
     formData.append("itemRelatedParts.width", formState.partWidth);
     formData.append("itemRelatedParts.height", formState.partHeight);
     formData.append("itemRelatedParts.length", formState.partLength);
+    formData.append("itemRelatedParts.weight", formState.partWeight);
+    formData.append("itemRelatedPartsTwo.partName", formState.partNameTwo);
+    formData.append("itemRelatedPartsTwo.width", formState.partWidthTwo);
+    formData.append("itemRelatedPartsTwo.height", formState.partHeightTwo);
+    formData.append("itemRelatedPartsTwo.length", formState.partLengthTwo);
+    formData.append("itemRelatedPartsTwo.weight", formState.partWeightTwo);
 
     if (formState.stock) {
       formData.append("stock", Number(formState.stock));
@@ -402,6 +420,14 @@ const EditProduct = ({ id }) => {
                 value={formState.partName}
                 onChange={handleInputChange}
               />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="item part name 2"
+                name="partNameTwo"
+                value={formState.partNameTwo}
+                onChange={handleInputChange}
+              />
             </Grid>
 
             {/* second grid */}
@@ -529,6 +555,7 @@ const EditProduct = ({ id }) => {
                     type="number"
                     label="Width"
                     name="partWidth"
+                    partWidth
                     value={formState.partWidth}
                     onChange={handleInputChange}
                   />
@@ -545,6 +572,45 @@ const EditProduct = ({ id }) => {
                   />
                 </Grid>
               </Grid>
+              
+              <Grid container spacing={2}>
+              <Grid item xs={4}>
+              <TextField
+                    fullWidth
+                    margin="normal"
+                    type="number"
+                    label="Height"
+                    name="partHeightTwo"
+                    value={formState.partHeightTwo}
+                    onChange={handleInputChange}
+                  />
+</Grid>
+                <Grid item xs={4}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    type="number"
+                    label="Width"
+                    name="partWidthTwo"
+                    value={formState.partWidthTwo}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField
+
+                    fullWidth
+                    margin="normal"
+                    type="number"
+                    label="length"
+                    name="partLengthTwo"
+                    value={formState.partLengthTwo}
+                    onChange={handleInputChange}
+                  />
+                 </Grid>
+
+                </Grid>
+
             </Grid>
 
             {/* third grid */}
@@ -647,6 +713,22 @@ const EditProduct = ({ id }) => {
                 label="style"
                 name="style"
                 value={formState.style}
+                onChange={handleInputChange}
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="weight"
+                name="partWeight"
+                value={formState.partWeight}
+                onChange={handleInputChange}
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="weight 2"
+                name="partWeightTwo"
+                value={formState.partWeightTwo}
                 onChange={handleInputChange}
               />
             </Grid>
