@@ -38,7 +38,8 @@ import { useEffect, useState } from "react";
 import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 import { useLocation, useNavigate } from "react-router-dom";
 import FlexBetween from "./FlexBetween";
-import profileImage from "assets/profile.jpeg";
+import profileImage from "assets/favicon.ico";
+
 
 const navItems = [
   {

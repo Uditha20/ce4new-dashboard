@@ -74,6 +74,7 @@ const EditProduct = ({ id }) => {
     partHeightTwo: "",
     partLengthTwo: "",
     partWeightTwo: "",
+    unitQuantity: "",
   });
   const [alertOpen, setAlertOpen] = useState(false); // For Snackbar
   const [previewImage, setPreviewImage] = useState(null);
@@ -133,6 +134,7 @@ const EditProduct = ({ id }) => {
         partHeightTwo: productDetails.itemRelatedPartsTwo?.height || "",
         partLengthTwo: productDetails.itemRelatedPartsTwo?.length || "",
         partWeightTwo: productDetails.itemRelatedPartsTwo?.weight || "",
+        unitQuantity: productDetails.unitQuantity || "",
       });
     }
   }, [productDetails]);
@@ -202,6 +204,7 @@ const EditProduct = ({ id }) => {
     formData.append("itemRelatedPartsTwo.height", formState.partHeightTwo);
     formData.append("itemRelatedPartsTwo.length", formState.partLengthTwo);
     formData.append("itemRelatedPartsTwo.weight", formState.partWeightTwo);
+    formData.append("unitQuantity", formState.unitQuantity);
 
     if (formState.stock) {
       formData.append("stock", Number(formState.stock));
@@ -790,6 +793,14 @@ const EditProduct = ({ id }) => {
                 label="Product ID"
                 name="productId"
                 value={formState.productId}
+                onChange={handleInputChange}
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Unit Quantity"
+                name="unitQuantity"
+                value={formState.unitQuantity}
                 onChange={handleInputChange}
               />
             </Grid>
