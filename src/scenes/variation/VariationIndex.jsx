@@ -275,6 +275,8 @@ function VariationIndex() {
               backgroundColor: "gray",
               margin: "auto",
               maxWidth: 500,
+              // height: "auto",
+              // overflow: "auto",
               borderRadius: 2,
             }}
           >
@@ -340,6 +342,22 @@ function VariationIndex() {
                 }
               />
               <TextField
+                label="One Day Premium Second Item"
+                fullWidth
+                margin="normal"
+                type="number"
+                value={selectedVariation?.price?.oneDayPremiumSecondItem || ""}
+                onChange={(e) =>
+                  setSelectedVariation({
+                    ...selectedVariation,
+                    price: {
+                      ...selectedVariation.price,
+                      oneDayPremiumSecondItem: e.target.value,
+                    },
+                  })
+                }
+              />
+              <TextField
                 label="Two Day Premium"
                 fullWidth
                 margin="normal"
@@ -351,6 +369,22 @@ function VariationIndex() {
                     price: {
                       ...selectedVariation.price,
                       twoDayPremium: e.target.value,
+                    },
+                  })
+                }
+              />
+              <TextField
+                label="Two Day Premium Second Item"
+                fullWidth
+                margin="normal"
+                type="number"
+                value={selectedVariation?.price?.twoDayPremiumSecondItem || ""}
+                onChange={(e) =>
+                  setSelectedVariation({
+                    ...selectedVariation,
+                    price: {
+                      ...selectedVariation.price,
+                      twoDayPremiumSecondItem: e.target.value,
                     },
                   })
                 }

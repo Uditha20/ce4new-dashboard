@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   Box,
   Typography,
   Grid,
-  TextField,
   Button,
   Alert,
+  TextField,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormLabel,
+  Autocomplete,
+  MenuItem,
 } from "@mui/material";
 import { useAddVariationMutation, useGetProductsQuery } from "state/api";
 
@@ -23,6 +29,8 @@ function Variation({
   const [itemQty, setItemQty] = useState("");
   const [productId, setProductId] = useState("");
   const [variationId, setVariationId] = useState("");
+  const [variationType, setVariationType] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Price fields
   const [price, setPrice] = useState({
@@ -84,6 +92,10 @@ function Variation({
     }
   };
 
+
+  const filteredProducts = products?.filter((product) =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -96,6 +108,7 @@ function Variation({
       formData.append("xlPrice", JSON.stringify(xlPrice));
       formData.append("mdPrice", JSON.stringify(mdPrice));
       formData.append("variationId", variationId);
+      formData.append("variationType", variationType);
 
       // Add images to formData
       if (mainImage) {
@@ -165,7 +178,7 @@ function Variation({
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
               />
-              <TextField
+              {/* <TextField
                 select
                 fullWidth
                 margin="normal"
@@ -181,6 +194,32 @@ function Variation({
                     {product.name}
                   </option>
                 ))}
+              </TextField> */}
+
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Search Product"
+                variant="outlined"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+
+              {/* Dropdown List */}
+              <TextField
+                select
+                fullWidth
+                label="Select Product"
+                margin="normal"
+                value={productId}
+                onChange={(e) => setProductId(e.target.value)}
+              >
+                <MenuItem value="">Select Product</MenuItem>
+                {filteredProducts?.map((product) => (
+                  <MenuItem key={product._id} value={product._id}>
+                    {product.name}
+                  </MenuItem>
+                ))}
               </TextField>
               <TextField
                 fullWidth
@@ -190,6 +229,23 @@ function Variation({
                 value={itemQty}
                 onChange={(e) => setItemQty(e.target.value)}
               />
+              <FormLabel component="legend">Variation Type</FormLabel>
+              <RadioGroup
+                row
+                value={variationType}
+                onChange={(e) => setVariationType(e.target.value)}
+              >
+                <FormControlLabel
+                  value="name"
+                  control={<Radio />}
+                  label="Product Name"
+                />
+                <FormControlLabel
+                  value="quantity"
+                  control={<Radio />}
+                  label="Product Quantity"
+                />
+              </RadioGroup>
             </Grid>
 
             {/* Price Section */}
@@ -239,15 +295,15 @@ function Variation({
               <TextField
                 fullWidth
                 margin="normal"
-                label="XL-2DayPre-2nd"
-                name="xlTwoDayPremiumSecondItem"
+                label="TwoDayPre-2nd"
+                name="twoDayPremiumSecondItem"
                 type="number"
-                value={xlPrice.xlTwoDayPremiumSecondItem}
-                onChange={(e) => handlePriceChange(e, "xlPrice")}
+                value={price.twoDayPremiumSecondItem}
+                onChange={(e) => handlePriceChange(e, "price")}
               />
 
               {/* XL Price */}
-              <Typography variant="subtitle2">XL Price</Typography>
+              {/* <Typography variant="subtitle2">XL Price</Typography>
               <TextField
                 fullWidth
                 margin="normal"
@@ -292,10 +348,10 @@ function Variation({
                 type="number"
                 value={xlPrice.xlTwoDayPremiumSecondItem}
                 onChange={(e) => handlePriceChange(e, "xlPrice")}
-              />
+              /> */}
 
               {/* MD Price */}
-              <Typography variant="subtitle2">MD Price</Typography>
+              {/* <Typography variant="subtitle2">MD Price</Typography>
               <TextField
                 fullWidth
                 margin="normal"
@@ -340,7 +396,7 @@ function Variation({
                 type="number"
                 value={mdPrice.mdTwoDayPremiumSecondItem}
                 onChange={(e) => handlePriceChange(e, "mdPrice")}
-              />
+              /> */}
             </Grid>
 
             <Grid item xs={12} sm={6}>
