@@ -172,7 +172,7 @@ const EditProduct = ({ id }) => {
     // Add fields to FormData
     formData.append("name", formState.name);
     formData.append("sku", formState.sku);
-    // formData.append("capacity", formState.capacity);
+    formData.append("capacity", formState.capacity);
     formData.append("dimensions.dheight", formState.height);
     formData.append("dimensions.dwidth", formState.width);
     formData.append("dimensions.dlength", formState.length);
