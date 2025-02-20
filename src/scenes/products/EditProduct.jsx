@@ -452,6 +452,7 @@ const EditProduct = ({ id }) => {
                     margin="normal"
                     label="Measure"
                     value={formState.capacityMeasure}
+                    name="capacityMeasure"
                     onChange={handleInputChange}
                     select
                   >
