@@ -215,7 +215,7 @@ function Variation({
                 onChange={(e) => setProductId(e.target.value)}
               >
                 <MenuItem value="">Select Product</MenuItem>
-                {filteredProducts?.map((product) => (
+                { filteredProducts?.map((product) => (
                   <MenuItem key={product._id} value={product._id}>
                     {product.name}
                   </MenuItem>
