@@ -458,7 +458,7 @@ const EditProduct = ({ id }) => {
                   >
                     <MenuItem value="liters">Liters</MenuItem>
                     <MenuItem value="kg">Kilograms</MenuItem>
-                    <MenuItem value="ml">Milliliters</MenuItem>
+                    <MenuItem value="ml">Mililiters</MenuItem>
                     <MenuItem value="g">grams</MenuItem>
 
                     {/* Add more units as needed */}
