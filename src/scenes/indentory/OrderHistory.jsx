@@ -302,6 +302,7 @@ function OrderHistory() {
             <Table>
               <TableHead>
                 <TableRow>
+                <TableCell>Product id</TableCell>
                   <TableCell>Product Name</TableCell>
                   <TableCell>Quantity</TableCell>
                   <TableCell>Price</TableCell>
@@ -312,11 +313,12 @@ function OrderHistory() {
               <TableBody>
                 {selectedItems.map((item) => (
                   <TableRow key={item.product._id}>
+                    <TableCell>{item.product.productId}</TableCell>
                     <TableCell>{item.product.name}</TableCell>
                     <TableCell>{item.quantity}</TableCell>
-                    <TableCell>${item.product.price.basePrice.toFixed(2)}</TableCell>
+                    <TableCell>£{item.product.price.basePrice.toFixed(2)}</TableCell>
                     <TableCell>{item.product.discount ? `${item.product.discount}%` : "No Discount"}</TableCell>
-                    <TableCell>${(item.quantity * item.product.price.basePrice).toFixed(2)}</TableCell>
+                    <TableCell>£{(item.quantity * item.product.price.basePrice).toFixed(2)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
