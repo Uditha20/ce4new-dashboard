@@ -16,6 +16,7 @@ import {
   TextField,
   Grid,
   Chip,
+  InputAdornment,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Header from "components/Header";
@@ -23,6 +24,7 @@ import AddProductForm from "./AddProductForm";
 import { useGetProductsQuery, useUpdateOneProductMutation,useDeleteOneProductMutation } from "state/api";
 import EditProduct from "./EditProduct";
 import ConfirmDialog from "scenes/admin/ConfirmDialog";
+import { GridSearchIcon } from "@mui/x-data-grid";
 
 const ProductRow = ({ product }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -316,9 +318,12 @@ const Products = () => {
   };
 
   const filteredData = data.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+  product.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+  (product.sku && product.sku.toLowerCase().includes(searchTerm.toLowerCase()))
+);
+  useEffect(() => {
+    setPage(0);
+  }, [searchTerm]);
   if (isLoading) return <Typography>Loading...</Typography>;
   if (error) return <Typography>Error: {error.message}</Typography>;
 
@@ -328,9 +333,25 @@ const Products = () => {
       <Button variant="contained" onClick={handleOpenAddProduct}>
         Add Product
       </Button>
+
       <AddProductForm
         open={isAddProductOpen}
         handleClose={handleCloseAddProduct}
+      />
+        <TextField
+      
+        variant="outlined"
+        size="small"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        sx={{ width: '250px',paddingLeft: '10px'}}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <GridSearchIcon />
+            </InputAdornment>
+          ),
+        }}
       />
 
       {filteredData.length > 0 ? (

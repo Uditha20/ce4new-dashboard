@@ -48,6 +48,7 @@ const AddProductForm = ({ open, handleClose }) => {
   const [productId, setProductId] = useState("");
   const [style, setStyle] = useState("");
   const [occasion, setOccasion] = useState([]);
+  const [reSellerPrice,setReSellerPrice]=useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -172,6 +173,7 @@ const AddProductForm = ({ open, handleClose }) => {
     formData.append("itemRelatedParts", JSON.stringify(itemRelatedParts));
     formData.append("itemRelatedPartsTwo", JSON.stringify(itemRelatedPartsTwo));
     formData.append("dimensions", JSON.stringify(dimensions));
+    formData.append("reSellerPrice", reSellerPrice);
 
     if (mainImage) {
       formData.append("mainImage", mainImage);
@@ -890,6 +892,17 @@ const AddProductForm = ({ open, handleClose }) => {
                 value={saleCount}
                 onChange={(e) => setSaleCount(e.target.value)}
               />
+                <TextField
+                fullWidth
+                margin="normal"
+                label="Reseller Price"
+                type="number"
+                value={reSellerPrice}
+                required
+                onChange={(e) => setReSellerPrice(e.target.value)}
+              />
+
+
               <TextField
                 fullWidth
                 margin="normal"
@@ -945,6 +958,11 @@ const AddProductForm = ({ open, handleClose }) => {
                 <MenuItem value="Retirement">Retirement</MenuItem>
                 <MenuItem value="Opening Day">Opening Day</MenuItem>
               </Select>
+
+
+            
+
+
             </Grid>
           </Grid>
           <p>short Description</p>
