@@ -18,12 +18,25 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import BreakdownChart from "components/BreakdownChart";
 import OverviewChart from "components/OverviewChart";
-import { useGetDashboardQuery, useGetUserProfileQuery } from "state/api";
+import {
+  useGetDashboardQuery,
+  useGetUserProfileQuery,
+  useGetProductsDashQuery,
+} from "state/api";
 import StatBox from "components/StatBox";
 import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
-  const { data: userProfileData, error, isLoading: isUserProfileLoading } = useGetUserProfileQuery();
+  const {
+    data: userProfileData,
+    error,
+    isLoading: isUserProfileLoading,
+  } = useGetUserProfileQuery();
+  const {
+    data: productsData,
+    error: dashboardError,
+    isLoading: isProductsLoading,
+  } = useGetProductsDashQuery();
   const navigate = useNavigate();
   const theme = useTheme();
   const isNonMediumScreens = useMediaQuery("(min-width: 1200px)");
@@ -34,7 +47,27 @@ const Dashboard = () => {
   //   }
   // }, [error, navigate]);
 
+  // useEffect(() => {
+  //   if (dashboardError && dashboardError.status === 401) {
+  //     if (
+  //       dashboardError?.data?.message === "Not authorized, token failed" ||
+  //       dashboardError?.data?.message === "Not authorized, no token"
+  //     ) {
+  //       localStorage.removeItem("token");
+  //       window.location.href = "http://localhost:3000";
+  //     }
+  //   }
+  // }, [dashboardError]);
 
+    // Show a loader while data is being fetched
+    if (isUserProfileLoading || isProductsLoading) {
+      return (
+        <div style={{ textAlign: "center", marginTop: "100px" }}>
+          <h2>Loading dashboard...</h2>
+          {/* Replace with a spinner component if available */}
+        </div>
+      );
+    }
 
   const columns = [
     {
@@ -131,26 +164,26 @@ const Dashboard = () => {
           <OverviewChart view="sales" isDashboard={true} />
         </Box>
         <StatBox
-          // title="Monthly Sales"
-          // value={data && data.thisMonthStats.totalSales}
-          // increase="+5%"
-          // description="Since last month"
-          // icon={
-          //   <PersonAdd
-          //     sx={{ color: theme.palette.secondary[300], fontSize: "26px" }}
-          //   />
-          // }
+        // title="Monthly Sales"
+        // value={data && data.thisMonthStats.totalSales}
+        // increase="+5%"
+        // description="Since last month"
+        // icon={
+        //   <PersonAdd
+        //     sx={{ color: theme.palette.secondary[300], fontSize: "26px" }}
+        //   />
+        // }
         />
         <StatBox
-          // title="Yearly Sales"
-          // value={data && data.yearlySalesTotal}
-          // increase="+43%"
-          // description="Since last month"
-          // icon={
-          //   <Traffic
-          //     sx={{ color: theme.palette.secondary[300], fontSize: "26px" }}
-          //   />
-          // }
+        // title="Yearly Sales"
+        // value={data && data.yearlySalesTotal}
+        // increase="+43%"
+        // description="Since last month"
+        // icon={
+        //   <Traffic
+        //     sx={{ color: theme.palette.secondary[300], fontSize: "26px" }}
+        //   />
+        // }
         />
 
         {/* ROW 2 */}

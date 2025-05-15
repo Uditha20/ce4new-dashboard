@@ -148,6 +148,13 @@ export const api = createApi({
       query: () => "productVariation/getVariationsForDashobard",
       providesTags: ["variation"],
     }),
+    getProductsDash: build.query({
+      query: () => {
+        const token = localStorage.getItem("token");
+        return `client/dashboard/products?token=${token}`;
+      },
+      providesTags: ["variation"],
+    }),
     updateOneProduct: build.mutation({
       query: (id) => ({
         url: `client/updateOneProduct/${id}`, // Backend endpoint
@@ -208,4 +215,5 @@ export const {
   useEditVariationMutation,
   useUpdateOneVariationMutation,
   useUpdateIsActiveMutation,
+  useGetProductsDashQuery,
 } = api;
