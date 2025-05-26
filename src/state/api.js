@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const api = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_BASE_URL }),
+  baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_BASE_URL, credentials: "include" }),
   reducerPath: "adminApi",
   credentials: "include",
   tagTypes: [
@@ -150,8 +150,8 @@ export const api = createApi({
     }),
     getProductsDash: build.query({
       query: () => {
-        const token = localStorage.getItem("token");
-        return `client/dashboard/products?token=${token}`;
+        
+        return "client/dashboard/products";
       },
       providesTags: ["variation"],
     }),

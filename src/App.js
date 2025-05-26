@@ -21,9 +21,7 @@ import ProductStock from "scenes/indentory/ProductStock";
 import OrderHistory from "scenes/indentory/OrderHistory";
 import Category from "scenes/category";
 import VariationIndex from "scenes/variation/VariationIndex";
-
-
-
+import ProtectedRoute from "routes/ProtectedRoute";
 
 function App() {
   const mode = useSelector((state) => state.global.mode);
@@ -34,7 +32,13 @@ function App() {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Routes>
-            <Route element={<Layout />}>
+            <Route
+              element={
+                <ProtectedRoute>
+                  <Layout />
+                </ProtectedRoute>
+              }
+            >
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/products" element={<Products />} />
@@ -47,11 +51,11 @@ function App() {
               <Route path="/breakdown" element={<Breakdown />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/performance" element={<Performance />} />
-              <Route path="/delivery" element ={<Delivery/>}/>
-              <Route path="/inventory" element ={<ProductStock/>}/>
-              <Route path="/orderHistory" element ={<OrderHistory/>}/>       
-              <Route path="/category" element ={<Category/>}/>
-              <Route path="/variation" element ={<VariationIndex/>}/>     
+              <Route path="/delivery" element={<Delivery />} />
+              <Route path="/inventory" element={<ProductStock />} />
+              <Route path="/orderHistory" element={<OrderHistory />} />
+              <Route path="/category" element={<Category />} />
+              <Route path="/variation" element={<VariationIndex />} />
             </Route>
           </Routes>
         </ThemeProvider>

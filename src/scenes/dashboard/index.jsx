@@ -14,6 +14,7 @@ import {
   Typography,
   useTheme,
   useMediaQuery,
+  CircularProgress,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import BreakdownChart from "components/BreakdownChart";
@@ -27,11 +28,11 @@ import StatBox from "components/StatBox";
 import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
-  const {
-    data: userProfileData,
-    error,
-    isLoading: isUserProfileLoading,
-  } = useGetUserProfileQuery();
+  // const {
+  //   data: userProfileData,
+  //   error,
+  //   isLoading: isUserProfileLoading,
+  // } = useGetUserProfileQuery();
   const {
     data: productsData,
     error: dashboardError,
@@ -41,34 +42,34 @@ const Dashboard = () => {
   const theme = useTheme();
   const isNonMediumScreens = useMediaQuery("(min-width: 1200px)");
   const { data, isLoading } = useGetDashboardQuery();
-  // useEffect(() => {
-  //   if (error) {
-  //     window.location.href = process.env.REACT_APP_FRONTEND_URL;
-  //   }
-  // }, [error, navigate]);
+  const { data: dashboardData, isLoading: isDashboardLoading } =
+    useGetDashboardQuery();
+  const {
+    data: userProfileData,
+    error: userProfileError,
+    isLoading: isUserProfileLoading,
+  } = useGetUserProfileQuery();
 
   // useEffect(() => {
-  //   if (dashboardError && dashboardError.status === 401) {
-  //     if (
-  //       dashboardError?.data?.message === "Not authorized, token failed" ||
-  //       dashboardError?.data?.message === "Not authorized, no token"
-  //     ) {
-  //       localStorage.removeItem("token");
-  //       window.location.href = "http://localhost:3000";
-  //     }
+  //   if (!isUserProfileLoading && (!userProfileData?.user || userProfileError)) {
+  //     window.location.href = "http://localhost:3000";
   //   }
-  // }, [dashboardError]);
-
-    // Show a loader while data is being fetched
-    if (isUserProfileLoading || isProductsLoading) {
-      return (
-        <div style={{ textAlign: "center", marginTop: "100px" }}>
-          <h2>Loading dashboard...</h2>
-          {/* Replace with a spinner component if available */}
-        </div>
-      );
-    }
-
+  // }, [isUserProfileLoading, userProfileData, userProfileError]);
+  // if (isUserProfileLoading || isDashboardLoading || isProductsLoading) {
+  //   return (
+  //     <Box
+  //       display="flex"
+  //       justifyContent="center"
+  //       alignItems="center"
+  //       height="100vh"
+  //     >
+  //       <CircularProgress />
+  //     </Box>
+  //   );
+  // }
+  // if (!userProfileData?.user) {
+  //   return null; // Don't render anything
+  // }
   const columns = [
     {
       field: "_id",
