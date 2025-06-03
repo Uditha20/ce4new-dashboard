@@ -75,6 +75,7 @@ const EditProduct = ({ id }) => {
     partLengthTwo: "",
     partWeightTwo: "",
     unitQuantity: "",
+    resellerPrice: "",
   });
   const [alertOpen, setAlertOpen] = useState(false); // For Snackbar
   const [previewImage, setPreviewImage] = useState(null);
@@ -135,6 +136,7 @@ const EditProduct = ({ id }) => {
         partLengthTwo: productDetails.itemRelatedPartsTwo?.length || "",
         partWeightTwo: productDetails.itemRelatedPartsTwo?.weight || "",
         unitQuantity: productDetails.unitQuantity || "",
+        resellerPrice: productDetails.resellerPrice || "",
       });
     }
   }, [productDetails]);
@@ -205,6 +207,7 @@ const EditProduct = ({ id }) => {
     formData.append("itemRelatedPartsTwo.length", formState.partLengthTwo);
     formData.append("itemRelatedPartsTwo.weight", formState.partWeightTwo);
     formData.append("unitQuantity", formState.unitQuantity);
+    formData.append("resellerPrice",formState.resellerPrice)
 
     if (formState.stock) {
       formData.append("stock", Number(formState.stock));
@@ -576,10 +579,10 @@ const EditProduct = ({ id }) => {
                   />
                 </Grid>
               </Grid>
-              
+
               <Grid container spacing={2}>
-              <Grid item xs={4}>
-              <TextField
+                <Grid item xs={4}>
+                  <TextField
                     fullWidth
                     margin="normal"
                     type="number"
@@ -588,7 +591,7 @@ const EditProduct = ({ id }) => {
                     value={formState.partHeightTwo}
                     onChange={handleInputChange}
                   />
-</Grid>
+                </Grid>
                 <Grid item xs={4}>
                   <TextField
                     fullWidth
@@ -602,7 +605,6 @@ const EditProduct = ({ id }) => {
                 </Grid>
                 <Grid item xs={4}>
                   <TextField
-
                     fullWidth
                     margin="normal"
                     type="number"
@@ -611,10 +613,8 @@ const EditProduct = ({ id }) => {
                     value={formState.partLengthTwo}
                     onChange={handleInputChange}
                   />
-                 </Grid>
-
                 </Grid>
-
+              </Grid>
             </Grid>
 
             {/* third grid */}
@@ -802,6 +802,15 @@ const EditProduct = ({ id }) => {
                 label="Unit Quantity"
                 name="unitQuantity"
                 value={formState.unitQuantity}
+                onChange={handleInputChange}
+              />
+
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Reseller Price"
+                name="resellerPrice"
+                value={formState.resellerPrice}
                 onChange={handleInputChange}
               />
             </Grid>
